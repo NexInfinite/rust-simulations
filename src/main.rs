@@ -17,6 +17,11 @@ async fn main() {
         clear_background(BLACK);
         background::draw_background().await;
         ball = moving_ball::move_and_draw_ball(ball).await;
+
+        // Debug info
+        draw_text(&format!("FPS: {}", get_fps()), 10.0, 20.0, 18.0, WHITE);
+        draw_text(&format!("Time: {:.2}", get_time()), 10.0, 40.0, 18.0, WHITE);
+
         next_frame().await
     }
 }
