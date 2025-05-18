@@ -4,30 +4,39 @@ use std::f32::consts::PI;
 use crate::helpers::{self, normalize_x_y};
 
 pub struct Ball {
-    pos: helpers::Pos,
-    radius: f32,
-    time_period: f32,
+    pub pos: helpers::Pos,
+    pub radius: f32,
+    pub time_period: f32,
+    pub color: Color,
+    pub size: f32,
 }
 
 impl Ball {
-    pub fn new(x: f32, y: f32, time_period: f32) -> Ball {
+    pub fn new(x: f32, y: f32, time_period: f32, color: Color, size: f32) -> Ball {
         Ball {
             pos: helpers::Pos { x: x, y: y },
             radius: (x * x + y * y).sqrt(),
             time_period: time_period,
+            color: color,
+            size: size,
         }
     }
 }
 
-pub async fn move_and_draw_ball(mut ball: Ball) -> Ball {
+pub async fn move_and_draw_ball(mut ball: Ball, normal_position: Option<helpers::Pos>) -> Ball {
     ball = move_center_ball(ball).await;
-    draw_center_ball(&ball).await;
+    draw_center_ball(&ball, normal_position).await;
     return ball;
 }
 
-async fn draw_center_ball(ball: &Ball) {
-    let pos = normalize_x_y(ball.pos);
-    draw_circle(pos.x, pos.y, 10.0, RED);
+async fn draw_center_ball(ball: &Ball, normal_position: Option<helpers::Pos>) {
+    let mut pos = helpers::Pos { x: 0.0, y: 0.0 };
+    pos = normalize_x_y(ball.pos);
+    if let Some(normal_pos) = normal_position {
+        pos.x += normal_pos.x + ball.pos.x;
+        pos.y += normal_pos.y + ball.pos.y;
+    }
+    draw_circle(pos.x, pos.y, ball.size, ball.color);
 }
 
 async fn move_center_ball(mut ball: Ball) -> Ball {
