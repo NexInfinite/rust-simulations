@@ -30,8 +30,7 @@ pub async fn move_and_draw_ball(mut ball: Ball, normal_position: Option<helpers:
 }
 
 async fn draw_center_ball(ball: &Ball, normal_position: Option<helpers::Pos>) {
-    let mut pos = helpers::Pos { x: 0.0, y: 0.0 };
-    pos = normalize_x_y(ball.pos);
+    let mut pos = normalize_x_y(ball.pos);
     if let Some(normal_pos) = normal_position {
         pos.x += normal_pos.x + ball.pos.x;
         pos.y += normal_pos.y + ball.pos.y;
