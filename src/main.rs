@@ -1,6 +1,16 @@
-fn main() {
-    println!("Hello, world!");
-    println!("What is going on?");
-    let x: i32 = 12;
-    print!("{}", x);
+use macroquad::prelude::*;
+mod background;
+mod helpers;
+mod moving_ball;
+
+#[macroquad::main("Animations")]
+async fn main() {
+    let mut ball = moving_ball::Ball::new(200.0, 0.0, 5.0);
+
+    loop {
+        clear_background(BLACK);
+        background::draw_background().await;
+        ball = moving_ball::move_and_draw_ball(ball).await;
+        next_frame().await
+    }
 }
