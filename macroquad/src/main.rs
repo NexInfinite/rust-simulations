@@ -5,8 +5,8 @@ mod moving_ball;
 
 #[macroquad::main("Animations")]
 async fn main() {
-    let mut ball = moving_ball::Ball::new(200.0, 0.0, 15.0, RED, 15.0);
-    let mut smaller_ball = moving_ball::Ball::new(25.0, 0.0, 2.0, BLUE, 7.5);
+    let mut ball = moving_ball::Ball::new(200.0, 0.0, 36.5, RED, 15.0);
+    let mut smaller_ball = moving_ball::Ball::new(25.0, 0.0, 2.732, BLUE, 7.5);
 
     loop {
         // Check for quit
