@@ -1,14 +1,20 @@
 use bevy::{
-    color::palettes::css::GREEN,
+    pbr::{MaterialPipeline, MaterialPipelineKey},
     prelude::*,
     reflect::TypePath,
-    render::render_resource::{AsBindGroup, ShaderRef},
-    sprite::{AlphaMode2d, Material2d, Material2dPlugin},
-    window,
+    render::{
+        mesh::MeshVertexBufferLayoutRef,
+        render_resource::{
+            AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
+        },
+    },
+    sprite::{AlphaMode2d, Material2d, Material2dKey, Material2dPlugin},
 };
 
 /// This example uses a shader source file from the assets subdirectory
-const SHADER_ASSET_PATH: &str = "shaders/custom_material.wgsl";
+// const SHADER_ASSET_PATH: &str = "shaders/custom_material.wgsl";
+const VERTEX_SHADER_ASSET_PATH: &str = "shaders/custom.vert";
+const SHADER_ASSET_PATH: &str = "shaders/grid.frag";
 
 fn main() {
     App::new()
@@ -49,7 +55,24 @@ impl Material2d for CustomMaterial {
         SHADER_ASSET_PATH.into()
     }
 
+    fn vertex_shader() -> ShaderRef {
+        VERTEX_SHADER_ASSET_PATH.into()
+    }
+
     fn alpha_mode(&self) -> AlphaMode2d {
         AlphaMode2d::Blend
+    }
+
+    // Bevy assumes by default that vertex shaders use the "vertex" entry point
+    // and fragment shaders use the "fragment" entry point (for WGSL shaders).
+    // GLSL uses "main" as the entry point, so we must override the defaults here
+    fn specialize(
+        descriptor: &mut RenderPipelineDescriptor,
+        _layout: &MeshVertexBufferLayoutRef,
+        _key: Material2dKey<Self>,
+    ) -> Result<(), SpecializedMeshPipelineError> {
+        descriptor.vertex.entry_point = "main".into();
+        descriptor.fragment.as_mut().unwrap().entry_point = "main".into();
+        Ok(())
     }
 }

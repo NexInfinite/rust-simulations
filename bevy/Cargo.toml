@@ -4,7 +4,7 @@ name = "bevy_sims"
 version = "0.1.0"
 
 [dependencies]
-bevy = {version = "0.16", features = ["dynamic_linking"]}
+bevy = {version = "0.16", features = ["dynamic_linking", "shader_format_glsl"]}
 
 [profile.dev]
 opt-level = 1
