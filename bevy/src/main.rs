@@ -23,6 +23,10 @@ fn main() {
             Material2dPlugin::<CustomMaterial>::default(),
         ))
         .add_systems(Startup, setup)
+        .add_systems(
+            Update,
+            (keep_grid_same_size_as_background, scale_background),
+        )
         .run();
 }
 
@@ -34,19 +38,42 @@ fn setup(
     window: Single<&Window>,
 ) {
     // Camera and window
-    let window_size = window.resolution.physical_size().as_vec2();
     commands.spawn(Camera2d);
 
-    // quad
+    // Grid
+    let window_size = window.resolution.physical_size().as_vec2();
     commands.spawn((
-        Mesh2d(meshes.add(Rectangle::new(window_size.x, window_size.y))),
-        MeshMaterial2d(materials.add(CustomMaterial {})),
+        Mesh2d(meshes.add(Rectangle::default())),
+        MeshMaterial2d(materials.add(CustomMaterial {
+            window_size: window_size,
+        })),
+        Transform::from_scale(vec3(window_size.x, window_size.y, 1.0)),
     ));
+}
+
+fn keep_grid_same_size_as_background(
+    mut query: Query<&mut Transform, With<Mesh2d>>,
+    window: Single<&Window>,
+) {
+    let window_size = window.resolution.physical_size().as_vec2();
+    for mut transform in &mut query {
+        transform.scale = vec3(window_size.x, window_size.y, 1.0);
+    }
+}
+
+fn scale_background(mut materials: ResMut<Assets<CustomMaterial>>, window: Single<&Window>) {
+    let window_size = window.resolution.physical_size().as_vec2();
+    for material in materials.iter_mut() {
+        material.1.window_size = window_size;
+    }
 }
 
 // This is the struct that will be passed to your shader
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-struct CustomMaterial {}
+struct CustomMaterial {
+    #[uniform(0)]
+    window_size: Vec2,
+}
 
 /// The Material2d trait is very configurable, but comes with sensible defaults for all methods.
 /// You only need to implement functions for features that need non-default behaviour. See the Material2d api docs for details!
@@ -55,24 +82,7 @@ impl Material2d for CustomMaterial {
         SHADER_ASSET_PATH.into()
     }
 
-    // fn vertex_shader() -> ShaderRef {
-    //     VERTEX_SHADER_ASSET_PATH.into()
-    // }
-
     fn alpha_mode(&self) -> AlphaMode2d {
         AlphaMode2d::Blend
     }
-
-    // Bevy assumes by default that vertex shaders use the "vertex" entry point
-    // and fragment shaders use the "fragment" entry point (for WGSL shaders).
-    // GLSL uses "main" as the entry point, so we must override the defaults here
-    // fn specialize(
-    //     descriptor: &mut RenderPipelineDescriptor,
-    //     _layout: &MeshVertexBufferLayoutRef,
-    //     _key: Material2dKey<Self>,
-    // ) -> Result<(), SpecializedMeshPipelineError> {
-    //     descriptor.vertex.entry_point = "main".into();
-    //     descriptor.fragment.as_mut().unwrap().entry_point = "main".into();
-    //     Ok(())
-    // }
 }
