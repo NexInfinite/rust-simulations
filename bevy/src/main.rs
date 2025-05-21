@@ -15,7 +15,7 @@ fn main() {
             Material2dPlugin::<CustomMaterial>::default(),
         ))
         .add_systems(Startup, setup)
-        .add_systems(Update, (scale_background_mesh2d, scale_background_wgsl))
+        .add_systems(Update, scale_background)
         .run();
 }
 
@@ -36,22 +36,19 @@ fn setup(
         MeshMaterial2d(materials.add(CustomMaterial {
             window_size: window_size,
         })),
-        Transform::from_scale(vec3(window_size.x, window_size.y, 1.0)),
+        Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
     ));
 }
 
-fn scale_background_mesh2d(
+fn scale_background(
     mut query: Query<&mut Transform, With<Mesh2d>>,
+    mut materials: ResMut<Assets<CustomMaterial>>,
     window: Single<&Window>,
 ) {
     let window_size = window.resolution.physical_size().as_vec2();
     for mut transform in &mut query {
-        transform.scale = vec3(window_size.x, window_size.y, 1.0);
+        transform.scale = vec3(window_size.x, window_size.y, 0.0);
     }
-}
-
-fn scale_background_wgsl(mut materials: ResMut<Assets<CustomMaterial>>, window: Single<&Window>) {
-    let window_size = window.resolution.physical_size().as_vec2();
     for material in materials.iter_mut() {
         material.1.window_size = window_size;
     }
