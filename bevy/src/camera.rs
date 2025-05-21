@@ -12,7 +12,7 @@ impl Plugin for CameraPlugin {
 // Setup a simple 2d scene
 pub fn camera_setup(mut commands: Commands) {
     // Camera and window
-    commands.spawn((Camera2d, CustomCamera {}));
+    commands.spawn((Camera2d, CustomCamera));
 }
 
 pub fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
@@ -23,4 +23,4 @@ pub fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<A
 }
 
 #[derive(TypePath, Component)]
-pub struct CustomCamera {}
+pub struct CustomCamera;

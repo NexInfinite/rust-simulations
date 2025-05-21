@@ -17,6 +17,6 @@ pub fn ball(
     commands.spawn((
         Mesh2d(mesh),
         MeshMaterial2d(materials.add(Color::from(RED))),
-        Transform::from_xyz(0.0, 0.0, 0.0),
+        Transform::from_xyz(0.0, 0.0, 1.0),
     ));
 }

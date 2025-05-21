@@ -9,7 +9,7 @@ fn main() {
             DefaultPlugins,
             camera::CameraPlugin,
             grid::GridPlugin,
-            // circular::CircularPlugin,
+            circular::CircularPlugin,
         ))
         .run();
 }

@@ -1,5 +1,5 @@
 use bevy::{
-    color::palettes::css::RED,
+    color::palettes::css::{BLUE, RED},
     math::ops::powf,
     prelude::*,
     reflect::TypePath,
@@ -36,14 +36,8 @@ pub fn camera_setup(
             window_size: window_size,
             zoom: 0.5, // 0-1 is zooming in, >1 is zooming out (ikr)
         })),
-        Transform::from_scale(vec3(window_size.x, window_size.y, -100.0)),
-    ));
-
-    let mesh = meshes.add(Circle::new(10.0));
-    commands.spawn((
-        Mesh2d(mesh),
-        MeshMaterial2d(color_materials.add(Color::from(RED))),
-        Transform::from_xyz(0.0, 0.0, 0.0),
+        Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
+        GridMesh,
     ));
 }
 
@@ -66,7 +60,7 @@ pub fn controls(
 }
 
 pub fn scale_background(
-    mut query: Query<&mut Transform, With<Mesh2d>>,
+    mut query: Query<&mut Transform, With<GridMesh>>,
     mut materials: ResMut<Assets<GridShader>>,
     window: Single<&Window>,
 ) {
@@ -89,7 +83,7 @@ pub struct GridShader {
 }
 
 #[derive(TypePath, Component)]
-pub struct CustomCamera {}
+pub struct GridMesh;
 
 /// The Material2d trait is very configurable, but comes with sensible defaults for all methods.
 /// You only need to implement functions for features that need non-default behaviour. See the Material2d api docs for details!
