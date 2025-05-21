@@ -36,7 +36,7 @@ pub fn camera_setup(
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(GridShader {
             window_size: window_size,
-            zoom: 1.0,
+            zoom: 0.5,
         })),
         Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
     ));
