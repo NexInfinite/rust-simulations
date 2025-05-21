@@ -32,7 +32,8 @@ fn camera_setup(
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(GridShader {
             window_size: window_size,
-            zoom: 0.5, // 0-1 is zooming in, >1 is zooming out (ikr)
+            default_zoom: 0.5, // Must be the same as zoom
+            zoom: 0.5,         // 0-1 is zooming in, >1 is zooming out (ikr)
         })),
         Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
         GridMesh,
@@ -73,15 +74,16 @@ fn scale_background(
 
 // This is the struct that will be passed to your shader
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-struct GridShader {
+pub struct GridShader {
     #[uniform(0)]
     window_size: Vec2,
     #[uniform(1)]
-    zoom: f32,
+    pub zoom: f32,
+    pub default_zoom: f32,
 }
 
 #[derive(TypePath, Component)]
-struct GridMesh;
+pub struct GridMesh;
 
 /// The Material2d trait is very configurable, but comes with sensible defaults for all methods.
 /// You only need to implement functions for features that need non-default behaviour. See the Material2d api docs for details!

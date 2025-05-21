@@ -2,6 +2,8 @@ use std::f32::consts::PI;
 
 use bevy::{color::palettes::css::RED, prelude::*};
 
+use crate::grid;
+
 pub struct CircularPlugin;
 #[derive(Component)]
 pub struct Ball {
@@ -33,12 +35,25 @@ fn ball(
     ));
 }
 
-fn move_ball(mut query: Query<(&mut Transform, &mut Ball), With<Ball>>, time: Res<Time>) {
-    for (mut transform, ball) in &mut query {
+fn move_ball(
+    mut ball_query: Query<(&mut Transform, &mut Ball), With<Ball>>,
+    mut grid_shader_materials: ResMut<Assets<grid::GridShader>>,
+    time: Res<Time>,
+) {
+    let mut zoom = 1.0;
+    for material in grid_shader_materials.iter_mut() {
+        zoom = material.1.default_zoom / material.1.zoom;
+    }
+
+    for (mut transform, ball) in &mut ball_query {
+        // Move Ball
         let mut translation = transform.translation;
         let angle = (2.0 * PI) / ball.time_period * time.elapsed_secs();
-        translation.x = ball.radius * f32::cos(angle);
-        translation.y = ball.radius * f32::sin(angle);
+        translation.x = ball.radius * zoom * f32::cos(angle);
+        translation.y = ball.radius * zoom * f32::sin(angle);
         transform.translation = translation;
+
+        // Resize Ball
+        transform.scale = vec3(zoom, zoom, 1.0);
     }
 }
