@@ -1,20 +1,12 @@
 use bevy::{
-    pbr::{MaterialPipeline, MaterialPipelineKey},
     prelude::*,
     reflect::TypePath,
-    render::{
-        mesh::MeshVertexBufferLayoutRef,
-        render_resource::{
-            AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
-        },
-    },
-    sprite::{AlphaMode2d, Material2d, Material2dKey, Material2dPlugin},
+    render::render_resource::{AsBindGroup, ShaderRef},
+    sprite::{AlphaMode2d, Material2d, Material2dPlugin},
 };
 
 /// This example uses a shader source file from the assets subdirectory
 const SHADER_ASSET_PATH: &str = "shaders/custom_material.wgsl";
-// const VERTEX_SHADER_ASSET_PATH: &str = "shaders/custom.vert";
-// const SHADER_ASSET_PATH: &str = "shaders/grid.frag";
 
 fn main() {
     App::new()
@@ -23,10 +15,7 @@ fn main() {
             Material2dPlugin::<CustomMaterial>::default(),
         ))
         .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (keep_grid_same_size_as_background, scale_background),
-        )
+        .add_systems(Update, (scale_background_mesh2d, scale_background_wgsl))
         .run();
 }
 
@@ -51,7 +40,7 @@ fn setup(
     ));
 }
 
-fn keep_grid_same_size_as_background(
+fn scale_background_mesh2d(
     mut query: Query<&mut Transform, With<Mesh2d>>,
     window: Single<&Window>,
 ) {
@@ -61,7 +50,7 @@ fn keep_grid_same_size_as_background(
     }
 }
 
-fn scale_background(mut materials: ResMut<Assets<CustomMaterial>>, window: Single<&Window>) {
+fn scale_background_wgsl(mut materials: ResMut<Assets<CustomMaterial>>, window: Single<&Window>) {
     let window_size = window.resolution.physical_size().as_vec2();
     for material in materials.iter_mut() {
         material.1.window_size = window_size;
