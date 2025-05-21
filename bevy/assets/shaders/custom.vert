@@ -8,5 +8,5 @@ layout(location = 0) out vec2 v_Uv;
 
 void main() {
   v_Uv = Vertex_Uv;
-  gl_Position = vec4(Vertex_Position, 0.0);
+  gl_Position = vec4(0.0, Vertex_Uv.x, 0.0, 0.0);
 }
