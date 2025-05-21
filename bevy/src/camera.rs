@@ -15,7 +15,7 @@ impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(Material2dPlugin::<GridShader>::default());
         app.add_systems(Startup, camera_setup);
-        app.add_systems(Update, (set_initial_zoom, scale_background));
+        app.add_systems(Update, scale_background);
         app.add_systems(Update, camera_controls);
     }
 }
@@ -28,13 +28,7 @@ pub fn camera_setup(
     window: Single<&Window>,
 ) {
     // Camera and window
-    commands.spawn((
-        Camera2d,
-        CustomCamera {
-            initial_zoom: false,
-            default_zoom: 0.5,
-        },
-    ));
+    commands.spawn((Camera2d, CustomCamera {}));
 
     // Grid
     let window_size = window.resolution.physical_size().as_vec2();
@@ -42,13 +36,14 @@ pub fn camera_setup(
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(GridShader {
             window_size: window_size,
+            zoom: 1.0,
         })),
         Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
     ));
 }
 
 pub fn camera_controls(
-    mut camera_query: Query<(&mut Projection, &mut CustomCamera), With<CustomCamera>>,
+    mut materials: ResMut<Assets<GridShader>>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time<Fixed>>,
     mut exit: EventWriter<AppExit>,
@@ -58,39 +53,16 @@ pub fn camera_controls(
         exit.write(AppExit::Success);
     }
 
-    let Ok((mut projection, custom_camera)) = camera_query.single_mut() else {
-        return;
-    };
-
-    if let Projection::Orthographic(projection2d) = &mut *projection {
+    // Zoom
+    for material in materials.iter_mut() {
         if input.pressed(KeyCode::Space) {
-            projection2d.scale *= powf(4.0, time.delta_secs());
-            projection2d.scale = f32::clamp(projection2d.scale, 0.1, 1.0);
+            material.1.zoom = f32::clamp(material.1.zoom * powf(4.0, time.delta_secs()), 0.25, 4.0);
         }
 
         if input.pressed(KeyCode::ControlLeft) {
-            projection2d.scale *= powf(0.25, time.delta_secs());
-            projection2d.scale = f32::clamp(projection2d.scale, 0.1, 1.0);
+            material.1.zoom =
+                f32::clamp(material.1.zoom * powf(0.25, time.delta_secs()), 0.25, 4.0);
         }
-
-        if input.pressed(KeyCode::KeyO) {
-            projection2d.scale = custom_camera.default_zoom;
-        }
-    }
-}
-
-pub fn set_initial_zoom(
-    mut camera_query: Query<(&mut Projection, &mut CustomCamera), With<CustomCamera>>,
-) {
-    let Ok((mut projection, mut custom_camera)) = camera_query.single_mut() else {
-        return;
-    };
-
-    if let Projection::Orthographic(projection2d) = &mut *projection {
-        if !custom_camera.initial_zoom {
-            projection2d.scale = custom_camera.default_zoom;
-        }
-        custom_camera.initial_zoom = true;
     }
 }
 
@@ -113,13 +85,12 @@ pub fn scale_background(
 pub struct GridShader {
     #[uniform(0)]
     window_size: Vec2,
+    #[uniform(1)]
+    zoom: f32,
 }
 
 #[derive(TypePath, Component)]
-pub struct CustomCamera {
-    initial_zoom: bool,
-    default_zoom: f32,
-}
+pub struct CustomCamera {}
 
 /// The Material2d trait is very configurable, but comes with sensible defaults for all methods.
 /// You only need to implement functions for features that need non-default behaviour. See the Material2d api docs for details!
