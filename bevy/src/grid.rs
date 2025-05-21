@@ -1,5 +1,4 @@
 use bevy::{
-    color::palettes::css::{BLUE, RED},
     math::ops::powf,
     prelude::*,
     reflect::TypePath,
@@ -22,11 +21,10 @@ impl Plugin for GridPlugin {
 }
 
 // Setup a simple 2d scene
-pub fn camera_setup(
+fn camera_setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<GridShader>>,
-    mut color_materials: ResMut<Assets<ColorMaterial>>,
     window: Single<&Window>,
 ) {
     let window_size = window.resolution.physical_size().as_vec2();
@@ -41,7 +39,7 @@ pub fn camera_setup(
     ));
 }
 
-pub fn controls(
+fn controls(
     mut materials: ResMut<Assets<GridShader>>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time<Fixed>>,
@@ -59,7 +57,7 @@ pub fn controls(
     }
 }
 
-pub fn scale_background(
+fn scale_background(
     mut query: Query<&mut Transform, With<GridMesh>>,
     mut materials: ResMut<Assets<GridShader>>,
     window: Single<&Window>,
@@ -75,7 +73,7 @@ pub fn scale_background(
 
 // This is the struct that will be passed to your shader
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
-pub struct GridShader {
+struct GridShader {
     #[uniform(0)]
     window_size: Vec2,
     #[uniform(1)]
@@ -83,7 +81,7 @@ pub struct GridShader {
 }
 
 #[derive(TypePath, Component)]
-pub struct GridMesh;
+struct GridMesh;
 
 /// The Material2d trait is very configurable, but comes with sensible defaults for all methods.
 /// You only need to implement functions for features that need non-default behaviour. See the Material2d api docs for details!

@@ -10,12 +10,12 @@ impl Plugin for CameraPlugin {
 }
 
 // Setup a simple 2d scene
-pub fn camera_setup(mut commands: Commands) {
+fn camera_setup(mut commands: Commands) {
     // Camera and window
     commands.spawn((Camera2d, CustomCamera));
 }
 
-pub fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
+fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
     // Exiting
     if input.pressed(KeyCode::Escape) {
         exit.write(AppExit::Success);
@@ -23,4 +23,4 @@ pub fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<A
 }
 
 #[derive(TypePath, Component)]
-pub struct CustomCamera;
+struct CustomCamera;
