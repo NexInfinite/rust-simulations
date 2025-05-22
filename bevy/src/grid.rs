@@ -1,4 +1,5 @@
 use bevy::{
+    input::mouse::{MouseScrollUnit, MouseWheel},
     math::ops::powf,
     prelude::*,
     reflect::TypePath,
@@ -43,10 +44,26 @@ fn camera_setup(
 fn controls(
     mut materials: ResMut<Assets<GridShader>>,
     input: Res<ButtonInput<KeyCode>>,
+    mut evr_scroll: EventReader<MouseWheel>,
     time: Res<Time<Fixed>>,
 ) {
     // Zoom
     for material in materials.iter_mut() {
+        for ev in evr_scroll.read() {
+            if ev.unit == MouseScrollUnit::Line && ev.y < 0.0 {
+                material.1.zoom =
+                    f32::clamp(material.1.zoom * powf(16.0, time.delta_secs()), 0.25, 4.0);
+            }
+
+            if ev.unit == MouseScrollUnit::Line && ev.y > 0.0 {
+                material.1.zoom = f32::clamp(
+                    material.1.zoom * powf(1.0 / 16.0, time.delta_secs()),
+                    0.25,
+                    4.0,
+                );
+            }
+        }
+
         if input.pressed(KeyCode::Space) {
             material.1.zoom = f32::clamp(material.1.zoom * powf(4.0, time.delta_secs()), 0.25, 4.0);
         }
