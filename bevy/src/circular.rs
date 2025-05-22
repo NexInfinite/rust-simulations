@@ -97,11 +97,12 @@ fn move_ball(
         translation.x = ball.radius * zoom * f32::cos(angle) - camera_offset.x;
         translation.y = ball.radius * zoom * f32::sin(angle) + camera_offset.y;
 
+        // Following a ball
         if let Some(id) = ball.follow_id {
             let follow_ball_query = ball_transform_hashmap.iter().find(|b| b.0.to_owned() == id);
             if let Some(follow_ball) = follow_ball_query {
-                translation.x += follow_ball.1.x;
-                translation.y += follow_ball.1.y;
+                translation.x += follow_ball.1.x + camera_offset.x; // Offset camera x and y as it's already done above
+                translation.y += follow_ball.1.y - camera_offset.y;
             }
         }
 
