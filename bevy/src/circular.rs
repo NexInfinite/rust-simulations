@@ -55,16 +55,18 @@ fn move_ball(
     time: Res<Time>,
 ) {
     let mut zoom = 1.0;
+    let mut camera_offset = vec2(0.0, 0.0);
     for material in grid_shader_materials.iter_mut() {
         zoom = material.1.default_zoom / material.1.zoom;
+        camera_offset = material.1.camera_offset;
     }
 
     for (mut transform, ball) in &mut ball_query {
         // Move Ball
         let mut translation = transform.translation;
         let angle = (2.0 * PI) / ball.time_period * time.elapsed_secs();
-        translation.x = ball.radius * zoom * f32::cos(angle);
-        translation.y = ball.radius * zoom * f32::sin(angle);
+        translation.x = ball.radius * zoom * f32::cos(angle) - camera_offset.x;
+        translation.y = ball.radius * zoom * f32::sin(angle) + camera_offset.y;
         transform.translation = translation;
     }
 }

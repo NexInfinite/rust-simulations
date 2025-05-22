@@ -9,6 +9,7 @@ use bevy::{
 
 /// This example uses a shader source file from the assets subdirectory
 const SHADER_ASSET_PATH: &str = "shaders/custom_material.wgsl";
+const DEFAULT_ZOOM: f32 = 0.5;
 
 pub struct GridPlugin;
 
@@ -33,8 +34,9 @@ fn camera_setup(
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(GridShader {
             window_size: window_size,
-            default_zoom: 0.5, // Must be the same as zoom
-            zoom: 0.5,         // 0-1 is zooming in, >1 is zooming out (ikr)
+            camera_offset: vec2(0.0, 0.0),
+            default_zoom: DEFAULT_ZOOM, // Must be the same as zoom
+            zoom: DEFAULT_ZOOM,         // 0-1 is zooming in, >1 is zooming out (ikr)
         })),
         Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
         GridMesh,
@@ -43,12 +45,12 @@ fn camera_setup(
 
 fn controls(
     mut materials: ResMut<Assets<GridShader>>,
-    input: Res<ButtonInput<KeyCode>>,
     mut evr_scroll: EventReader<MouseWheel>,
+    input: Res<ButtonInput<KeyCode>>,
     time: Res<Time<Fixed>>,
 ) {
-    // Zoom
     for material in materials.iter_mut() {
+        // Scroll Zoom
         for ev in evr_scroll.read() {
             if ev.unit == MouseScrollUnit::Line && ev.y < 0.0 {
                 material.1.zoom =
@@ -64,13 +66,34 @@ fn controls(
             }
         }
 
+        // Input Zoom
         if input.pressed(KeyCode::Space) {
             material.1.zoom = f32::clamp(material.1.zoom * powf(4.0, time.delta_secs()), 0.25, 4.0);
         }
-
         if input.pressed(KeyCode::ControlLeft) {
             material.1.zoom =
                 f32::clamp(material.1.zoom * powf(0.25, time.delta_secs()), 0.25, 4.0);
+        }
+
+        // Move "camera" offset
+        let impulse = 400.0;
+        if input.pressed(KeyCode::KeyD) {
+            material.1.camera_offset.x += impulse * time.delta_secs();
+        }
+        if input.pressed(KeyCode::KeyA) {
+            material.1.camera_offset.x -= impulse * time.delta_secs();
+        }
+        if input.pressed(KeyCode::KeyW) {
+            material.1.camera_offset.y -= impulse * time.delta_secs();
+        }
+        if input.pressed(KeyCode::KeyS) {
+            material.1.camera_offset.y += impulse * time.delta_secs();
+        }
+
+        // Reset everything
+        if input.pressed(KeyCode::KeyO) {
+            material.1.camera_offset = vec2(0.0, 0.0);
+            material.1.zoom = DEFAULT_ZOOM;
         }
     }
 }
@@ -96,6 +119,8 @@ pub struct GridShader {
     window_size: Vec2,
     #[uniform(1)]
     pub zoom: f32,
+    #[uniform(2)]
+    pub camera_offset: Vec2,
     pub default_zoom: f32,
 }
 
