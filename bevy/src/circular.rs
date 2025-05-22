@@ -1,14 +1,20 @@
 use std::f32::consts::PI;
 
-use bevy::{color::palettes::css::RED, prelude::*};
+use bevy::{
+    color::palettes::css::{GREEN, RED},
+    platform::collections::HashMap,
+    prelude::*,
+};
 
 use crate::grid;
 
 pub struct CircularPlugin;
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Ball {
     radius: f32,
     time_period: f32,
+    follow_id: Option<i32>,
+    id: i32,
 }
 
 impl Plugin for CircularPlugin {
@@ -23,14 +29,27 @@ fn ball(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let mesh = meshes.add(Circle::new(15.0));
     commands.spawn((
-        Mesh2d(mesh),
+        Mesh2d(meshes.add(Circle::new(15.0))),
         MeshMaterial2d(materials.add(Color::from(RED))),
-        Transform::from_xyz(0.0, 100.0, 1.0),
+        Transform::from_xyz(0.0, 0.0, 1.0),
         Ball {
             radius: 100.0,
             time_period: 5.0,
+            follow_id: None,
+            id: 0,
+        },
+    ));
+
+    commands.spawn((
+        Mesh2d(meshes.add(Circle::new(10.0))),
+        MeshMaterial2d(materials.add(Color::from(GREEN))),
+        Transform::from_xyz(0.0, 0.0, 1.0),
+        Ball {
+            radius: 50.0,
+            time_period: 1.0,
+            follow_id: Some(0),
+            id: 1,
         },
     ));
 }
@@ -54,6 +73,7 @@ fn move_ball(
     mut grid_shader_materials: ResMut<Assets<grid::GridShader>>,
     time: Res<Time>,
 ) {
+    // Get variables from grid texture
     let mut zoom = 1.0;
     let mut camera_offset = vec2(0.0, 0.0);
     for material in grid_shader_materials.iter_mut() {
@@ -61,12 +81,30 @@ fn move_ball(
         camera_offset = material.1.camera_offset;
     }
 
+    // Get list of positions for following a ball
+    let mut ball_transform_hashmap: HashMap<i32, Vec2> = HashMap::new();
+    for (transform, ball) in &mut ball_query {
+        ball_transform_hashmap.insert(
+            ball.id,
+            vec2(transform.translation.x, transform.translation.y),
+        );
+    }
+
+    // Move Ball
     for (mut transform, ball) in &mut ball_query {
-        // Move Ball
         let mut translation = transform.translation;
         let angle = (2.0 * PI) / ball.time_period * time.elapsed_secs();
         translation.x = ball.radius * zoom * f32::cos(angle) - camera_offset.x;
         translation.y = ball.radius * zoom * f32::sin(angle) + camera_offset.y;
+
+        if let Some(id) = ball.follow_id {
+            let follow_ball_query = ball_transform_hashmap.iter().find(|b| b.0.to_owned() == id);
+            if let Some(follow_ball) = follow_ball_query {
+                translation.x += follow_ball.1.x;
+                translation.y += follow_ball.1.y;
+            }
+        }
+
         transform.translation = translation;
     }
 }
