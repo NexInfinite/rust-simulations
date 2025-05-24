@@ -5,21 +5,22 @@ use bevy::{
 
 use crate::timing::SimulationTiming;
 
-pub struct UiPlugin;
+pub struct UiPlayPauseButton;
 
-impl Plugin for UiPlugin {
+impl Plugin for UiPlayPauseButton {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
-        app.add_systems(Update, button_system);
+        app.add_systems(Update, (play_pause_button_system, update_play_pause_label));
     }
 }
 
 fn setup(mut commands: Commands, assets: Res<AssetServer>) {
-    commands.spawn(button(&assets));
+    commands.spawn(play_pause_button(&assets));
 }
 
-fn button(_asset_server: &AssetServer) -> impl Bundle + use<> {
+fn play_pause_button(_asset_server: &AssetServer) -> impl Bundle + use<> {
     (
+        // Container
         Node {
             width: Val::Percent(100.0),
             height: Val::Percent(100.0),
@@ -27,6 +28,7 @@ fn button(_asset_server: &AssetServer) -> impl Bundle + use<> {
             justify_content: JustifyContent::Center,
             ..default()
         },
+        // Button
         children![(
             Button,
             Node {
@@ -42,6 +44,7 @@ fn button(_asset_server: &AssetServer) -> impl Bundle + use<> {
             },
             BorderColor(Color::from(WHITE)),
             BackgroundColor(Color::from(BLACK)),
+            // Button text
             children![(
                 Text::new("Pause"),
                 TextFont {
@@ -54,20 +57,30 @@ fn button(_asset_server: &AssetServer) -> impl Bundle + use<> {
     )
 }
 
-fn button_system(
-    mut interaction_query: Query<(&Interaction, &Children), (Changed<Interaction>, With<Button>)>,
+fn play_pause_button_system(
+    mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<Button>)>,
     mut simulation_timing: ResMut<SimulationTiming>,
-    mut text_query: Query<&mut Text>,
 ) {
-    for (interaction, children) in &mut interaction_query {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+    for interaction in &mut interaction_query {
+        // Check if we clicked it
         if matches!(interaction, Interaction::Pressed) {
             simulation_timing.paused = !simulation_timing.paused;
-            **text = if simulation_timing.paused {
-                "Play".to_string()
-            } else {
-                "Pause".to_string()
-            }
+        }
+    }
+}
+
+fn update_play_pause_label(
+    mut text_query: Query<&mut Text>,
+    mut button_query: Query<&Children, With<Button>>,
+    simulation_timing: ResMut<SimulationTiming>,
+) {
+    for children in &mut button_query {
+        // Update text: this needs to happen constantly as timing can be changed from other means
+        let mut text = text_query.get_mut(children[0]).unwrap();
+        **text = if simulation_timing.paused {
+            "Play".to_string()
+        } else {
+            "Pause".to_string()
         }
     }
 }

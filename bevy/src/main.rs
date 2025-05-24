@@ -11,7 +11,7 @@ fn main() {
         .add_plugins((
             DefaultPlugins,
             timing::TimingPlugin,
-            ui::UiPlugin,
+            ui::ui::UiPlugin,
             camera::CameraPlugin,
             grid::GridPlugin,
             circular::CircularPlugin,
