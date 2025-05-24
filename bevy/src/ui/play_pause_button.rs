@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::timing::SimulationTiming;
+use crate::resources::timing::SimulationTiming;
 
 pub struct UiPlayPauseButton;
 

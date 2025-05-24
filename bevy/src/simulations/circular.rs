@@ -6,7 +6,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::{grid, timing::SimulationTiming};
+use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
 
 pub struct CircularPlugin;
 #[derive(Component, Clone, Copy)]

@@ -1,20 +1,19 @@
 use bevy::prelude::*;
 
-mod camera;
-mod circular;
-mod grid;
-mod timing;
+mod camera_and_background;
+mod resources;
+mod simulations;
 mod ui;
 
 fn main() {
     App::new()
         .add_plugins((
             DefaultPlugins,
-            timing::TimingPlugin,
+            resources::timing::TimingPlugin,
             ui::ui::UiPlugin,
-            camera::CameraPlugin,
-            grid::GridPlugin,
-            circular::CircularPlugin,
+            camera_and_background::camera::CameraPlugin,
+            camera_and_background::grid::GridPlugin,
+            simulations::circular::CircularPlugin,
         ))
         .run();
 }
