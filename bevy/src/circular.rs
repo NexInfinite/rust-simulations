@@ -6,7 +6,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::grid;
+use crate::{grid, timing::SimulationTiming};
 
 pub struct CircularPlugin;
 #[derive(Component, Clone, Copy)]
@@ -71,7 +71,7 @@ fn scale_ball(
 fn move_ball(
     mut ball_query: Query<(&mut Transform, &mut Ball), With<Ball>>,
     mut grid_shader_materials: ResMut<Assets<grid::GridShader>>,
-    time: Res<Time>,
+    time: Res<SimulationTiming>,
 ) {
     // Get variables from grid texture
     let mut zoom = 1.0;
@@ -93,7 +93,7 @@ fn move_ball(
     // Move Ball
     for (mut transform, ball) in &mut ball_query {
         let mut translation = transform.translation;
-        let angle = (2.0 * PI) / ball.time_period * time.elapsed_secs();
+        let angle = (2.0 * PI) / ball.time_period * time.time;
         translation.x = ball.radius * zoom * f32::cos(angle) - camera_offset.x;
         translation.y = ball.radius * zoom * f32::sin(angle) + camera_offset.y;
 

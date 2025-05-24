@@ -69,7 +69,7 @@ fn controls(
         }
 
         // Input Zoom
-        if input.pressed(KeyCode::Space) {
+        if input.pressed(KeyCode::ShiftLeft) {
             material.1.zoom = f32::clamp(material.1.zoom * powf(4.0, time.delta_secs()), 0.25, 4.0);
         }
         if input.pressed(KeyCode::ControlLeft) {

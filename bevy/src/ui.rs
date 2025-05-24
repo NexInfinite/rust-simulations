@@ -3,6 +3,8 @@ use bevy::{
     prelude::*,
 };
 
+use crate::timing::SimulationTiming;
+
 pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
@@ -54,12 +56,18 @@ fn button(_asset_server: &AssetServer) -> impl Bundle + use<> {
 
 fn button_system(
     mut interaction_query: Query<(&Interaction, &Children), (Changed<Interaction>, With<Button>)>,
+    mut simulation_timing: ResMut<SimulationTiming>,
     mut text_query: Query<&mut Text>,
 ) {
     for (interaction, children) in &mut interaction_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         if matches!(interaction, Interaction::Pressed) {
-            **text = "Press".to_string();
+            simulation_timing.paused = !simulation_timing.paused;
+            **text = if simulation_timing.paused {
+                "Play".to_string()
+            } else {
+                "Pause".to_string()
+            }
         }
     }
 }
