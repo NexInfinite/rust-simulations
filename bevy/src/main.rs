@@ -13,7 +13,8 @@ fn main() {
             ui::ui::UiPlugin,
             camera_and_background::camera::CameraPlugin,
             camera_and_background::grid::GridPlugin,
-            simulations::circular::CircularPlugin,
+            // simulations::circular::CircularSimulation,
+            simulations::tween::TweenSimulation,
         ))
         .run();
 }

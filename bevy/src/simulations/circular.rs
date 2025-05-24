@@ -8,7 +8,7 @@ use bevy::{
 
 use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
 
-pub struct CircularPlugin;
+pub struct CircularSimulation;
 #[derive(Component, Clone, Copy)]
 pub struct Ball {
     radius: f32,
@@ -17,7 +17,7 @@ pub struct Ball {
     id: i32,
 }
 
-impl Plugin for CircularPlugin {
+impl Plugin for CircularSimulation {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, ball);
         app.add_systems(Update, (scale_ball, move_ball));
