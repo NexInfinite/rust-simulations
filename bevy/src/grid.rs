@@ -1,5 +1,5 @@
 use bevy::{
-    input::mouse::{MouseScrollUnit, MouseWheel},
+    input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel},
     math::ops::powf,
     prelude::*,
     reflect::TypePath,
@@ -46,6 +46,8 @@ fn camera_setup(
 fn controls(
     mut materials: ResMut<Assets<GridShader>>,
     mut evr_scroll: EventReader<MouseWheel>,
+    mut evr_motion: EventReader<MouseMotion>,
+    mouse: Res<ButtonInput<MouseButton>>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time<Fixed>>,
 ) {
@@ -88,6 +90,14 @@ fn controls(
         }
         if input.pressed(KeyCode::KeyS) {
             material.1.camera_offset.y += impulse * time.delta_secs();
+        }
+
+        // Mouse panning
+        for ev in evr_motion.read() {
+            if mouse.pressed(MouseButton::Left) {
+                material.1.camera_offset -=
+                    ev.delta * vec2(time.delta_secs(), time.delta_secs()) * vec2(50.0, 50.0);
+            }
         }
 
         // Reset everything
