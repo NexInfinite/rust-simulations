@@ -1,2 +1,3 @@
 pub mod circular;
-pub mod tween;
+pub mod linear;
+pub mod selector;

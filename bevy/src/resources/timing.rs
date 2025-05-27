@@ -4,6 +4,7 @@ use bevy::prelude::*;
 pub struct SimulationTiming {
     pub paused: bool,
     pub time: f32,
+    // TODO: Add speed controls and reset function
 }
 
 pub struct TimingPlugin;

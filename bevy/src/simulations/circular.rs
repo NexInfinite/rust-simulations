@@ -1,14 +1,29 @@
-use std::f32::consts::PI;
-
 use bevy::{
     color::palettes::css::{GREEN, RED},
     platform::collections::HashMap,
     prelude::*,
 };
+use std::f32::consts::PI;
 
+use super::selector::SimulationState;
 use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
 
 pub struct CircularSimulation;
+
+impl Plugin for CircularSimulation {
+    fn build(&self, app: &mut App) {
+        app.add_systems(OnEnter(SimulationState::Circular), spawn_balls);
+        app.add_systems(OnExit(SimulationState::Circular), despawn_balls);
+        app.add_systems(
+            Update,
+            (
+                scale_ball.run_if(in_state(SimulationState::Circular)),
+                move_ball.run_if(in_state(SimulationState::Circular)),
+            ),
+        );
+    }
+}
+
 #[derive(Component, Clone, Copy)]
 pub struct Ball {
     radius: f32,
@@ -17,22 +32,16 @@ pub struct Ball {
     id: i32,
 }
 
-impl Plugin for CircularSimulation {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, ball);
-        app.add_systems(Update, (scale_ball, move_ball));
-    }
-}
-
-fn ball(
+fn spawn_balls(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
+    // Spawn balls
     commands.spawn((
         Mesh2d(meshes.add(Circle::new(15.0))),
         MeshMaterial2d(materials.add(Color::from(RED))),
-        Transform::from_xyz(0.0, 0.0, 1.0),
+        Transform::from_xyz(100.0, 0.0, 1.0),
         Ball {
             radius: 100.0,
             time_period: 5.0,
@@ -44,7 +53,7 @@ fn ball(
     commands.spawn((
         Mesh2d(meshes.add(Circle::new(10.0))),
         MeshMaterial2d(materials.add(Color::from(GREEN))),
-        Transform::from_xyz(0.0, 0.0, 1.0),
+        Transform::from_xyz(150.0, 0.0, 1.0),
         Ball {
             radius: 50.0,
             time_period: 1.0,
@@ -52,6 +61,12 @@ fn ball(
             id: 1,
         },
     ));
+}
+
+fn despawn_balls(mut commands: Commands, ball_query: Query<Entity, With<Ball>>) {
+    for entity in ball_query.iter() {
+        commands.entity(entity).despawn();
+    }
 }
 
 fn scale_ball(

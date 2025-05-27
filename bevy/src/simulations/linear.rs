@@ -5,12 +5,21 @@ use bevy::{
 
 use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
 
-pub struct TweenSimulation;
+use super::selector::SimulationState;
 
-impl Plugin for TweenSimulation {
+pub struct LinearSimulation;
+
+impl Plugin for LinearSimulation {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_ball);
-        app.add_systems(Update, (scale_ball, move_ball));
+        app.add_systems(OnEnter(SimulationState::Linear), spawn_balls);
+        app.add_systems(OnExit(SimulationState::Linear), despawn_balls);
+        app.add_systems(
+            Update,
+            (
+                scale_ball.run_if(in_state(SimulationState::Linear)),
+                move_ball.run_if(in_state(SimulationState::Linear)),
+            ),
+        );
     }
 }
 
@@ -23,7 +32,7 @@ pub struct Ball {
     time: f32,
 }
 
-fn spawn_ball(
+fn spawn_balls(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -68,6 +77,12 @@ fn spawn_ball(
     ));
 }
 
+fn despawn_balls(mut commands: Commands, ball_query: Query<Entity, With<Ball>>) {
+    for entity in ball_query.iter() {
+        commands.entity(entity).despawn();
+    }
+}
+
 fn scale_ball(
     mut ball_query: Query<&mut Transform, With<Ball>>,
     mut grid_shader_materials: ResMut<Assets<grid::GridShader>>,
@@ -97,16 +112,17 @@ fn move_ball(
     }
 
     // Move Ball
+    println!("{} - {}", simulation_time.time, time.delta_secs());
     for (mut transform, mut ball) in &mut ball_query {
         let diff = ball.end_pos - ball.start_pos;
-        if time.delta_secs() > 0.0 && !simulation_time.paused {
+        if simulation_time.time > 0.0 && !simulation_time.paused {
             let multiplication_vector =
-                diff * time.delta_secs() * ball.direction as f32 / ball.time;
+                diff * simulation_time.time * ball.direction as f32 / ball.time;
             ball.current_pos += multiplication_vector;
         }
 
         // Check direction
-        let multiplication_vector = diff * time.delta_secs() / ball.time;
+        let multiplication_vector = diff * simulation_time.time / ball.time;
         if ball.current_pos.x <= ball.end_pos.x && ball.current_pos.y <= ball.end_pos.y {
             ball.direction = -ball.direction;
             ball.current_pos -= multiplication_vector;
