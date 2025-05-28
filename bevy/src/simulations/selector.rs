@@ -12,7 +12,7 @@ pub struct SelectorPlugin;
 
 impl Plugin for SelectorPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_state(SimulationState::Linear);
+        app.insert_state(SimulationState::Circular);
         app.add_plugins(circular::CircularSimulation);
         app.add_plugins(linear::LinearSimulation);
 
