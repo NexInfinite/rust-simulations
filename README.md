@@ -8,4 +8,7 @@ This repository holds simulations and animations I've made in rust using bevy. T
 
 # AI Usage
 
-I've tagged this as "Write" from the [0rwx](https://0rwx.com) framework, however it is sometimes a grey area between "Read" and "Write". The framework aims an overview of how much AI wrote a project, however these things are much more granular in my opinion. To err on the side of caution, I am choosing to use "Write" even if most of this is written by hand. There will eventually be problems, detailed below if they occur, in which I'd rather have an agent solve them than spend countless hours and burning myself out. This is a project for fun, not for production or work, and so I'd rather keep the use of AI to a minimal: but I can't guarantee it will never be used.
+I've tagged this as "Write" from the [0rwx](https://0rwx.com) framework, however it is sometimes a grey area between "Read" and "Write". The framework aims an overview of how much AI wrote a project, however these things are much more granular in my opinion. 
+> To err on the side of caution, I am choosing to use "Write" even if most of this is written by hand. 
+
+There will eventually be problems, detailed below if they occur, in which I'd rather have an agent solve them than spend countless hours and burning myself out. This is a project for fun, not for production or work, and so I'd rather keep the use of AI to a minimal: but I can't guarantee it will never be used.
