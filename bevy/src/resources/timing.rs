@@ -12,7 +12,7 @@ pub struct TimingPlugin;
 impl Plugin for TimingPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(SimulationTiming {
-            paused: false,
+            paused: true,
             time: 0.0,
         });
         app.add_systems(Update, (controls, tick));

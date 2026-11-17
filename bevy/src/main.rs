@@ -7,13 +7,17 @@ mod ui;
 
 fn main() {
     App::new()
+        // Default, UI, and timings
         .add_plugins((
             DefaultPlugins,
-            resources::timing::TimingPlugin,
             ui::ui::UiPlugin,
+            resources::timing::TimingPlugin,
+            simulations::selector::SelectorPlugin,
+        ))
+        // Camera
+        .add_plugins((
             camera_and_background::camera::CameraPlugin,
             camera_and_background::grid::GridPlugin,
-            simulations::selector::SelectorPlugin,
         ))
         .run();
 }

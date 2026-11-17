@@ -12,3 +12,7 @@ I've tagged this as "Write" from the [0rwx](https://0rwx.com) framework, however
 > To err on the side of caution, I am choosing to use "Write" even if most of this is written by hand. 
 
 There will eventually be problems, detailed below if they occur, in which I'd rather have an agent solve them than spend countless hours and burning myself out. This is a project for fun, not for production or work, and so I'd rather keep the use of AI to a minimal: but I can't guarantee it will never be used.
+
+## Usages of AI Write:
+
+- None so far
