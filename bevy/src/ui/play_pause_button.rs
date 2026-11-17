@@ -98,8 +98,12 @@ fn play_pause_button_system(
 fn update_play_pause_label(
     mut text_query: Query<&mut Text>,
     mut button_query: Query<&Children, With<PlayPauseButton>>,
-    simulation_timing: ResMut<SimulationTiming>,
+    simulation_timing: Res<SimulationTiming>,
 ) {
+    if !simulation_timing.is_changed() {
+        return;
+    }
+
     for children in &mut button_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         **text = if simulation_timing.paused {
@@ -113,8 +117,12 @@ fn update_play_pause_label(
 fn update_time_label(
     mut text_query: Query<&mut Text>,
     mut button_query: Query<&Children, With<TimeLabel>>,
-    simulation_timing: ResMut<SimulationTiming>,
+    simulation_timing: Res<SimulationTiming>,
 ) {
+    if !simulation_timing.is_changed() {
+        return;
+    }
+
     for children in &mut button_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         **text = format!("Time: {:.2}s", simulation_timing.time)

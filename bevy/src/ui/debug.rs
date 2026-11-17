@@ -7,9 +7,6 @@ impl Plugin for UiDebugMode {
     fn build(&self, app: &mut App) {
         app.add_plugins((
             bevy::diagnostic::FrameTimeDiagnosticsPlugin::default(),
-            bevy::diagnostic::EntityCountDiagnosticsPlugin,
-            bevy::diagnostic::SystemInformationDiagnosticsPlugin,
-            bevy::render::diagnostic::RenderDiagnosticsPlugin,
             PerfUiPlugin,
         ));
         app.add_systems(

@@ -8,7 +8,7 @@ use bevy::{
 };
 
 /// This example uses a shader source file from the assets subdirectory
-const SHADER_ASSET_PATH: &str = "shaders/custom_material.wgsl";
+const SHADER_ASSET_PATH: &str = "shaders/grid.wgsl";
 const DEFAULT_ZOOM: f32 = 0.5;
 
 pub struct GridPlugin;
@@ -49,7 +49,7 @@ fn controls(
     mut evr_motion: EventReader<MouseMotion>,
     mouse: Res<ButtonInput<MouseButton>>,
     input: Res<ButtonInput<KeyCode>>,
-    time: Res<Time<Fixed>>,
+    time: Res<Time>,
 ) {
     for material in materials.iter_mut() {
         // Scroll Zoom
