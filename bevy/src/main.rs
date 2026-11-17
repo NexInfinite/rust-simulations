@@ -11,6 +11,7 @@ mod ui;
 #[derive(Resource)]
 pub struct EnvFlags {
     fps_logs: bool,
+    ticks_logs: bool,
 }
 
 fn main() {
@@ -25,15 +26,13 @@ fn main() {
         }),
         ..default()
     }));
-
-    // Add environmental flags
-    let log_fps = std::env::args().any(|arg| arg == "--fps");
-    app.insert_resource(EnvFlags { fps_logs: log_fps });
+    app.insert_resource(add_environmental_flags());
 
     // Default, UI, and timings
     app.add_plugins((
         ui::ui::UiPlugin,
         resources::timing::TimingPlugin,
+        resources::tick::AppTickPlugin,
         simulations::selector::SelectorPlugin,
     ));
 
@@ -45,4 +44,14 @@ fn main() {
 
     // Run and unhide window once all plugins are loaded
     app.run();
+}
+
+fn add_environmental_flags() -> EnvFlags {
+    // Add environmental flags
+    let fps_logs = std::env::args().any(|arg| arg == "--fps");
+    let ticks_logs = std::env::args().any(|arg| arg == "--ticks");
+    EnvFlags {
+        fps_logs: fps_logs,
+        ticks_logs: ticks_logs,
+    }
 }

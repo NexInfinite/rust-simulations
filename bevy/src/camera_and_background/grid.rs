@@ -1,5 +1,5 @@
 use bevy::{
-    input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel},
+    input::mouse::{MouseMotion, MouseWheel},
     math::ops::powf,
     prelude::*,
     reflect::TypePath,
@@ -7,12 +7,12 @@ use bevy::{
     sprite::{AlphaMode2d, Material2d, Material2dPlugin},
 };
 
-/// This example uses a shader source file from the assets subdirectory
 const SHADER_ASSET_PATH: &str = "shaders/grid.wgsl";
 const DEFAULT_ZOOM: f32 = 0.5;
 const BASE_GRID_SPACING: f32 = 50.0;
-const MIN_ZOOM: f32 = 0.25;
+const MIN_ZOOM: f32 = 0.1;
 const MAX_ZOOM: f32 = 4.0;
+const SCROLL_ZOOM_STEP: f32 = 0.1;
 
 pub struct GridPlugin;
 
@@ -58,22 +58,17 @@ fn controls(
     for material in materials.iter_mut() {
         // Scroll Zoom
         for ev in evr_scroll.read() {
-            if ev.unit == MouseScrollUnit::Line && ev.y < 0.0 {
-                let proposed_zoom = material.1.zoom * powf(4.0, ev.y);
-                material.1.zoom = f32::clamp(proposed_zoom, MIN_ZOOM, MAX_ZOOM);
-                // material.1.zoom =
-                //     f32::clamp(material.1.zoom * powf(32.0, time.delta_secs()), 0.25, 4.0);
-            }
-
-            if ev.unit == MouseScrollUnit::Line && ev.y > 0.0 {
-                material.1.zoom = f32::clamp(
-                    material.1.zoom * powf(1.0 / 32.0, time.delta_secs()),
-                    0.25,
-                    4.0,
-                );
-            }
+            let proposed_zoom = material.1.zoom - ev.y * SCROLL_ZOOM_STEP;
+            material.1.zoom = f32::clamp(proposed_zoom, MIN_ZOOM, MAX_ZOOM);
         }
         update_grid_gap(material.1);
+
+        // Mouse panning
+        for ev in evr_motion.read() {
+            if mouse.pressed(MouseButton::Left) {
+                material.1.camera_offset -= ev.delta;
+            }
+        }
 
         // Input Zoom
         if input.pressed(KeyCode::ShiftLeft) {
@@ -97,15 +92,6 @@ fn controls(
         }
         if input.pressed(KeyCode::KeyS) {
             material.1.camera_offset.y += impulse * time.delta_secs();
-        }
-
-        // Mouse panning
-        for ev in evr_motion.read() {
-            if mouse.pressed(MouseButton::Left) {
-                // material.1.camera_offset -=
-                //     ev.delta * vec2(time.delta_secs(), time.delta_secs()) * vec2(50.0, 50.0);
-                material.1.camera_offset -= ev.delta;
-            }
         }
 
         // Reset everything

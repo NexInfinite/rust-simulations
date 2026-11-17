@@ -17,12 +17,17 @@ impl Plugin for UiDebugMode {
             bevy::diagnostic::FrameTimeDiagnosticsPlugin::default(),
             PerfUiPlugin,
         ));
+        app.add_systems(Startup, startup);
         app.add_systems(
             Update,
             keyboard_handler.before(iyes_perf_ui::PerfUiSet::Setup),
         );
         app.add_systems(Update, log_fps);
     }
+}
+
+fn startup(mut commands: Commands) {
+    commands.spawn(PerfUiAllEntries::default());
 }
 
 fn log_fps(frames: Res<DiagnosticsStore>, env_flags: Res<EnvFlags>) {
