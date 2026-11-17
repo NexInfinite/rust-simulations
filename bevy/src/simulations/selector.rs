@@ -20,6 +20,7 @@ impl Plugin for SelectorPlugin {
     }
 }
 
+// TODO: Should really remove this if we have many more simulations?
 fn controls(
     input: Res<ButtonInput<KeyCode>>,
     mut next_sim_state: ResMut<NextState<SimulationState>>,
