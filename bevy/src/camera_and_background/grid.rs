@@ -10,6 +10,9 @@ use bevy::{
 /// This example uses a shader source file from the assets subdirectory
 const SHADER_ASSET_PATH: &str = "shaders/grid.wgsl";
 const DEFAULT_ZOOM: f32 = 0.5;
+const BASE_GRID_SPACING: f32 = 50.0;
+const MIN_ZOOM: f32 = 0.25;
+const MAX_ZOOM: f32 = 4.0;
 
 pub struct GridPlugin;
 
@@ -37,6 +40,7 @@ fn camera_setup(
             camera_offset: vec2(0.0, 0.0),
             default_zoom: DEFAULT_ZOOM, // Must be the same as zoom
             zoom: DEFAULT_ZOOM,         // 0-1 is zooming in, >1 is zooming out (ikr)
+            grid_gap: (BASE_GRID_SPACING / DEFAULT_ZOOM).round(),
         })),
         Transform::from_scale(vec3(window_size.x, window_size.y, 0.0)),
         GridMesh,
@@ -55,18 +59,21 @@ fn controls(
         // Scroll Zoom
         for ev in evr_scroll.read() {
             if ev.unit == MouseScrollUnit::Line && ev.y < 0.0 {
-                material.1.zoom =
-                    f32::clamp(material.1.zoom * powf(16.0, time.delta_secs()), 0.25, 4.0);
+                let proposed_zoom = material.1.zoom * powf(4.0, ev.y);
+                material.1.zoom = f32::clamp(proposed_zoom, MIN_ZOOM, MAX_ZOOM);
+                // material.1.zoom =
+                //     f32::clamp(material.1.zoom * powf(32.0, time.delta_secs()), 0.25, 4.0);
             }
 
             if ev.unit == MouseScrollUnit::Line && ev.y > 0.0 {
                 material.1.zoom = f32::clamp(
-                    material.1.zoom * powf(1.0 / 16.0, time.delta_secs()),
+                    material.1.zoom * powf(1.0 / 32.0, time.delta_secs()),
                     0.25,
                     4.0,
                 );
             }
         }
+        update_grid_gap(material.1);
 
         // Input Zoom
         if input.pressed(KeyCode::ShiftLeft) {
@@ -95,8 +102,9 @@ fn controls(
         // Mouse panning
         for ev in evr_motion.read() {
             if mouse.pressed(MouseButton::Left) {
-                material.1.camera_offset -=
-                    ev.delta * vec2(time.delta_secs(), time.delta_secs()) * vec2(50.0, 50.0);
+                // material.1.camera_offset -=
+                //     ev.delta * vec2(time.delta_secs(), time.delta_secs()) * vec2(50.0, 50.0);
+                material.1.camera_offset -= ev.delta;
             }
         }
 
@@ -122,6 +130,10 @@ fn scale_background(
     }
 }
 
+fn update_grid_gap(material: &mut GridShader) {
+    material.grid_gap = (50.0 / material.zoom).round();
+}
+
 // This is the struct that will be passed to your shader
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct GridShader {
@@ -132,6 +144,8 @@ pub struct GridShader {
     #[uniform(2)]
     pub camera_offset: Vec2,
     pub default_zoom: f32,
+    #[uniform(3)]
+    pub grid_gap: f32,
 }
 
 #[derive(TypePath, Component)]

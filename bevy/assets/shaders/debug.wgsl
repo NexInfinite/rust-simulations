@@ -7,6 +7,6 @@
 
 @fragment
 fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
-	return vec4(0.0, 0.0, 0.0, 0.0);
+	return vec4(0.0, 0.0, 0.0, 1.0);
 }
 
