@@ -64,7 +64,7 @@ fn handle_change_sim_click(
 ) {
     for interaction in &mut interaction_query {
         if matches!(interaction, Interaction::Pressed) {
-            println!("Clicked")
+            println!("Clicked") // TODO: Spawn popup on click
         }
     }
 }
