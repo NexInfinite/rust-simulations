@@ -15,4 +15,5 @@ There will eventually be problems, detailed below if they occur, in which I'd ra
 
 ## Usages of AI Write:
 
-- None so far
+- Used to rework how movement was handled so that entities moved in lock step, not lagging behind. This was done in parallel with Copilot in VSCode, it gave ideas and wrote some areas and I implemented others.
+- Used in copilot reviews, sometimes I'll let it submit the code
