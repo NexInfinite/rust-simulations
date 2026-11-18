@@ -7,9 +7,9 @@ pub struct SimulationTiming {
     // TODO: Add speed controls and reset function
 }
 
-pub struct TimingPlugin;
+pub struct SimulationTimingPlugin;
 
-impl Plugin for TimingPlugin {
+impl Plugin for SimulationTimingPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(SimulationTiming {
             paused: true,

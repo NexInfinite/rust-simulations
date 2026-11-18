@@ -1,11 +1,11 @@
 [package]
 edition = "2024"
-name = "bevy_sims"
+name = "rust_simulations"
 version = "0.1.0"
 
 [dependencies]
-bevy = {version = "0.16", features = ["dynamic_linking", "shader_format_glsl"]}
-iyes_perf_ui = "0.5.0"
+bevy = {version = "0.19.1", features = ["dynamic_linking", "shader_format_glsl"]}
+# iyes_perf_ui = "0.5.0"
 
 [profile.dev]
 opt-level = 1

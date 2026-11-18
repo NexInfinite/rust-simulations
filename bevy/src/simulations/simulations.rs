@@ -1,33 +1,31 @@
+use super::{circular, linear};
 use bevy::prelude::*;
 
-use super::{circular, linear};
-
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
-pub enum SimulationState {
+pub enum SimulationSceneEnum {
+    None,
     Circular,
     Linear,
 }
 
-pub struct SelectorPlugin;
+pub struct SimulationsPlugin;
 
-impl Plugin for SelectorPlugin {
+impl Plugin for SimulationsPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_state(SimulationState::Circular);
+        app.insert_state(SimulationSceneEnum::None);
         app.add_plugins(circular::CircularSimulation);
         app.add_plugins(linear::LinearSimulation);
-
         app.add_systems(Update, controls);
     }
 }
 
-// TODO: Should really remove this if we have many more simulations?
 fn controls(
     input: Res<ButtonInput<KeyCode>>,
-    mut next_sim_state: ResMut<NextState<SimulationState>>,
+    mut next_sim_state: ResMut<NextState<SimulationSceneEnum>>,
 ) {
     if input.just_pressed(KeyCode::Digit1) {
-        next_sim_state.set(SimulationState::Circular);
+        next_sim_state.set(SimulationSceneEnum::Circular);
     } else if input.just_pressed(KeyCode::Digit2) {
-        next_sim_state.set(SimulationState::Linear);
+        next_sim_state.set(SimulationSceneEnum::Linear);
     }
 }

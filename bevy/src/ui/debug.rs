@@ -2,7 +2,7 @@ use bevy::{
     diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin},
     prelude::*,
 };
-use iyes_perf_ui::prelude::*;
+// use iyes_perf_ui::prelude::*;
 use std::sync::LazyLock;
 
 use crate::EnvFlags;
@@ -15,19 +15,19 @@ impl Plugin for UiDebugMode {
     fn build(&self, app: &mut App) {
         app.add_plugins((
             bevy::diagnostic::FrameTimeDiagnosticsPlugin::default(),
-            PerfUiPlugin,
+            // PerfUiPlugin,
         ));
         app.add_systems(Startup, startup);
-        app.add_systems(
-            Update,
-            keyboard_handler.before(iyes_perf_ui::PerfUiSet::Setup),
-        );
+        // app.add_systems(
+        //     Update,
+        //     keyboard_handler.before(iyes_perf_ui::PerfUiSet::Setup),
+        // );
         app.add_systems(Update, log_fps);
     }
 }
 
-fn startup(mut commands: Commands) {
-    commands.spawn(PerfUiAllEntries::default());
+fn startup(mut _commands: Commands) {
+    // commands.spawn(PerfUiAllEntries::default());
 }
 
 fn log_fps(frames: Res<DiagnosticsStore>, env_flags: Res<EnvFlags>) {
@@ -51,16 +51,16 @@ fn log_fps(frames: Res<DiagnosticsStore>, env_flags: Res<EnvFlags>) {
     }
 }
 
-fn keyboard_handler(
-    mut commands: Commands,
-    input: Res<ButtonInput<KeyCode>>,
-    debug_plugin_query: Query<Entity, With<PerfUiRoot>>,
-) {
-    if input.just_pressed(KeyCode::F1) {
-        if let Ok(e) = debug_plugin_query.single() {
-            commands.entity(e).despawn();
-        } else {
-            commands.spawn(PerfUiAllEntries::default());
-        }
-    }
-}
+// fn keyboard_handler(
+//     mut commands: Commands,
+//     input: Res<ButtonInput<KeyCode>>,
+//     debug_plugin_query: Query<Entity, With<PerfUiRoot>>,
+// ) {
+//     if input.just_pressed(KeyCode::F1) {
+//         if let Ok(e) = debug_plugin_query.single() {
+//             commands.entity(e).despawn();
+//         } else {
+//             commands.spawn(PerfUiAllEntries::default());
+//         }
+//     }
+// }

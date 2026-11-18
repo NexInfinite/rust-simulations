@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::resources::timing::SimulationTiming;
+use crate::resources::simulation_timing::SimulationTiming;
 
 pub struct UiPlayPauseButton;
 #[derive(Component)]
@@ -48,13 +48,13 @@ fn play_pause_button(_asset_server: &AssetServer) -> impl Bundle + use<> {
                     align_items: AlignItems::Center,
                     ..default()
                 },
-                BorderColor(Color::from(WHITE)),
+                BorderColor::all(Color::from(WHITE)),
                 BackgroundColor(Color::from(BLACK)),
                 // Button text
                 children![(
                     Text::new("Pause"),
                     TextFont {
-                        font_size: 24.0,
+                        font_size: FontSize::Px(24.0),
                         ..default()
                     },
                     TextColor(Color::from(WHITE)),
@@ -72,7 +72,7 @@ fn play_pause_button(_asset_server: &AssetServer) -> impl Bundle + use<> {
                 children![(
                     Text::new("Time: 0.00s"),
                     TextFont {
-                        font_size: 16.0,
+                        font_size: FontSize::Px(16.0),
                         ..default()
                     },
                     TextColor(Color::from(WHITE)),

@@ -3,8 +3,9 @@ use bevy::{
     math::ops::powf,
     prelude::*,
     reflect::TypePath,
-    render::render_resource::{AsBindGroup, ShaderRef},
-    sprite::{AlphaMode2d, Material2d, Material2dPlugin},
+    render::render_resource::AsBindGroup,
+    shader::ShaderRef,
+    sprite_render::{AlphaMode2d, Material2d, Material2dPlugin},
 };
 
 const SHADER_ASSET_PATH: &str = "shaders/grid.wgsl";
@@ -49,8 +50,8 @@ fn camera_setup(
 
 fn controls(
     mut materials: ResMut<Assets<GridShader>>,
-    mut evr_scroll: EventReader<MouseWheel>,
-    mut evr_motion: EventReader<MouseMotion>,
+    mut evr_scroll: MessageReader<MouseWheel>,
+    mut evr_motion: MessageReader<MouseMotion>,
     mouse: Res<ButtonInput<MouseButton>>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
@@ -103,14 +104,15 @@ fn controls(
 }
 
 fn scale_background(
-    mut query: Query<&mut Transform, With<GridMesh>>,
+    mut mesh_transform_query: Query<&mut Transform, With<GridMesh>>,
     mut materials: ResMut<Assets<GridShader>>,
     window: Single<&Window>,
 ) {
     let window_size = window.resolution.physical_size().as_vec2();
-    for mut transform in &mut query {
+    for mut transform in &mut mesh_transform_query {
         transform.scale = vec3(window_size.x, window_size.y, 0.0);
     }
+
     for material in materials.iter_mut() {
         material.1.window_size = window_size;
     }

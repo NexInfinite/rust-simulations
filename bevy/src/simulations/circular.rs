@@ -5,20 +5,23 @@ use bevy::{
 };
 use std::f32::consts::PI;
 
-use super::selector::SimulationState;
-use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
+use crate::{
+    camera_and_background::grid, resources::simulation_timing::SimulationTiming,
+    simulations::simulations::SimulationSceneEnum,
+};
 
 pub struct CircularSimulation;
 
 impl Plugin for CircularSimulation {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(SimulationState::Circular), spawn_balls);
-        app.add_systems(OnExit(SimulationState::Circular), despawn_balls);
+        app.add_systems(OnEnter(SimulationSceneEnum::Circular), spawn_balls);
+        app.add_systems(OnExit(SimulationSceneEnum::Circular), despawn_balls);
+
         app.add_systems(
             Update,
             (
-                scale_ball.run_if(in_state(SimulationState::Circular)),
-                move_ball.run_if(in_state(SimulationState::Circular)),
+                scale_ball.run_if(in_state(SimulationSceneEnum::Circular)),
+                move_ball.run_if(in_state(SimulationSceneEnum::Circular)),
             ),
         );
     }

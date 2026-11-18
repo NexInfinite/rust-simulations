@@ -15,7 +15,7 @@ fn camera_setup(mut commands: Commands) {
     commands.spawn((Camera2d, CustomCamera));
 }
 
-fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: EventWriter<AppExit>) {
+fn camera_controls(input: Res<ButtonInput<KeyCode>>, mut exit: MessageWriter<AppExit>) {
     // Exiting
     if input.pressed(KeyCode::Escape) {
         exit.write(AppExit::Success);

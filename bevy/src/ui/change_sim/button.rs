@@ -3,14 +3,16 @@ use bevy::{
     prelude::*,
 };
 
-use crate::simulations::selector::SimulationState;
+use crate::ui::change_sim::popup::{ChangeSimPopup, create_sim_popup};
 
-pub struct UiChangeSim;
+// use crate::simulations::selector::SimulationState;
+
+pub struct UiChangeSimButton;
 
 #[derive(Component)]
 struct ChangeSimButton;
 
-impl Plugin for UiChangeSim {
+impl Plugin for UiChangeSimButton {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
         app.add_systems(Update, handle_change_sim_click);
@@ -44,13 +46,13 @@ fn select_sim() -> impl Bundle + use<> {
                 align_items: AlignItems::Center,
                 ..default()
             },
-            BorderColor(Color::from(WHITE)),
+            BorderColor::all(Color::from(WHITE)),
             BackgroundColor(Color::from(BLACK)),
             // Button text
             children![(
                 Text::new("Change Sim"),
                 TextFont {
-                    font_size: 24.0,
+                    font_size: FontSize::Px(24.0),
                     ..default()
                 },
             )],
@@ -60,11 +62,17 @@ fn select_sim() -> impl Bundle + use<> {
 }
 
 fn handle_change_sim_click(
+    mut commands: Commands,
     mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<ChangeSimButton>)>,
+    popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
 ) {
     for interaction in &mut interaction_query {
         if matches!(interaction, Interaction::Pressed) {
-            println!("Clicked") // TODO: Spawn popup on click
+            if let Ok(e) = popup_plugin_query.single() {
+                commands.entity(e).despawn();
+            } else {
+                commands.spawn(create_sim_popup());
+            }
         }
     }
 }

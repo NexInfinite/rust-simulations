@@ -31,9 +31,14 @@ fn main() {
     // Default, UI, and timings
     app.add_plugins((
         ui::ui::UiPlugin,
-        resources::timing::TimingPlugin,
+        simulations::simulations::SimulationsPlugin,
+    ));
+
+    // Resources
+    app.add_plugins((
+        resources::simulation_timing::SimulationTimingPlugin,
         resources::tick::AppTickPlugin,
-        simulations::selector::SelectorPlugin,
+        resources::global::GlobalResourcePlugin,
     ));
 
     // Camera
