@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::resources::global::main_in_focus;
+
 #[derive(Resource)]
 pub struct SimulationTiming {
     pub paused: bool,
@@ -15,7 +17,7 @@ impl Plugin for SimulationTimingPlugin {
             paused: true,
             time: 0.0,
         });
-        app.add_systems(Update, (controls, tick));
+        app.add_systems(Update, (controls, tick).run_if(main_in_focus));
     }
 }
 

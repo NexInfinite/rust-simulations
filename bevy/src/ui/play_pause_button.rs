@@ -88,7 +88,6 @@ fn play_pause_button_system(
     mut simulation_timing: ResMut<SimulationTiming>,
 ) {
     for interaction in &mut interaction_query {
-        // Check if we clicked it
         if matches!(interaction, Interaction::Pressed) {
             simulation_timing.paused = !simulation_timing.paused;
         }

@@ -8,6 +8,8 @@ use bevy::{
     sprite_render::{AlphaMode2d, Material2d, Material2dPlugin},
 };
 
+use crate::resources::global::main_in_focus;
+
 const SHADER_ASSET_PATH: &str = "shaders/grid.wgsl";
 const DEFAULT_ZOOM: f32 = 0.5;
 const BASE_GRID_SPACING: f32 = 50.0;
@@ -21,8 +23,7 @@ impl Plugin for GridPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(Material2dPlugin::<GridShader>::default());
         app.add_systems(Startup, camera_setup);
-        app.add_systems(Update, scale_background);
-        app.add_systems(Update, controls);
+        app.add_systems(Update, (scale_background, controls).run_if(main_in_focus));
     }
 }
 
