@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::resources::global::GlobalResource;
+use crate::resources::global::{GlobalResource, change_sim_popup_in_focus};
 
 pub struct UiChangeSimPopup;
 
@@ -14,6 +14,7 @@ impl Plugin for UiChangeSimPopup {
     fn build(&self, app: &mut App) {
         app.add_observer(on_popup_spawned);
         app.add_observer(on_popup_despawned);
+        app.add_systems(Update, (controls).run_if(change_sim_popup_in_focus));
     }
 }
 
@@ -33,7 +34,7 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
             ..default()
         },
         ChangeSimPopup,
-        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.5)),
+        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.7)),
         GlobalZIndex(100),
         children![(
             Node {
@@ -61,4 +62,18 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
             ),],
         )],
     )
+}
+
+fn controls(
+    mut commands: Commands,
+    input: Res<ButtonInput<KeyCode>>,
+    popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
+) {
+    if input.pressed(KeyCode::Escape) {
+        if let Ok(e) = popup_plugin_query.single() {
+            commands.entity(e).despawn();
+        } else {
+            commands.spawn(create_sim_popup());
+        }
+    }
 }

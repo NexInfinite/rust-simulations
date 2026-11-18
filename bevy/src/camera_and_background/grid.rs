@@ -23,7 +23,8 @@ impl Plugin for GridPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(Material2dPlugin::<GridShader>::default());
         app.add_systems(Startup, camera_setup);
-        app.add_systems(Update, (scale_background, controls).run_if(main_in_focus));
+        app.add_systems(Update, scale_background);
+        app.add_systems(Update, (controls).run_if(main_in_focus));
     }
 }
 

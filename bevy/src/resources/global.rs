@@ -24,3 +24,7 @@ impl Plugin for GlobalResourcePlugin {
 pub fn main_in_focus(global: Res<GlobalResource>) -> bool {
     global.focus == FocusEnum::Main
 }
+
+pub fn change_sim_popup_in_focus(global: Res<GlobalResource>) -> bool {
+    global.focus == FocusEnum::ChangeSim
+}
