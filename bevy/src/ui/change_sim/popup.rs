@@ -14,7 +14,10 @@ impl Plugin for UiChangeSimPopup {
     fn build(&self, app: &mut App) {
         app.add_observer(on_popup_spawned);
         app.add_observer(on_popup_despawned);
-        app.add_systems(Update, (controls).run_if(change_sim_popup_in_focus));
+        app.add_systems(
+            Update,
+            (exit_button, controls).run_if(change_sim_popup_in_focus),
+        );
     }
 }
 
@@ -42,8 +45,6 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
                 height: Val::Percent(80.0),
                 left: Val::Percent(15.0),
                 top: Val::Percent(10.0),
-                align_items: AlignItems::Center,
-                justify_content: JustifyContent::Center,
                 ..default()
             },
             children![(
@@ -53,24 +54,71 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
                     border: UiRect::all(Val::Px(2.0)),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
                     ..default()
                 },
                 BorderColor::all(Color::from(WHITE)),
                 BackgroundColor(Color::from(BLACK)),
+                children![(create_popup_exit(), create_popup_options())]
             ),],
         )],
     )
 }
 
+fn create_popup_options() -> impl Bundle + use<> {
+    ()
+}
+
+#[derive(Component)]
+struct ExitButton;
+
+fn create_popup_exit() -> impl Bundle + use<> {
+    (
+        Node {
+            // TODO: Move to pixel sizes and fix clicking
+            // TODO: Then add dropdown? Should probably be its own file?
+            top: Val::Percent(2.0),
+            left: Val::Percent(89.0),
+            width: Val::Percent(10.0),
+            height: Val::Percent(5.0),
+            border: UiRect::all(Val::Px(2.0)),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            ..default()
+        },
+        ExitButton,
+        BorderColor::all(Color::from(WHITE)),
+        BackgroundColor(Color::from(BLACK)),
+        children![(
+            Text::new("Exit"),
+            TextFont {
+                font_size: FontSize::Px(16.0),
+                ..default()
+            },
+        )],
+    )
+}
+
+fn exit_button(
+    mut commands: Commands,
+    mut exit_query: Query<&Interaction, (Changed<Interaction>, With<ExitButton>)>,
+    popup_query: Query<Entity, With<ChangeSimPopup>>,
+) {
+    for interaction in &mut exit_query {
+        if matches!(interaction, Interaction::Pressed) {
+            if let Ok(e) = popup_query.single() {
+                commands.entity(e).despawn();
+            }
+        }
+    }
+}
+
 fn controls(
     mut commands: Commands,
     input: Res<ButtonInput<KeyCode>>,
-    popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
+    popup_query: Query<Entity, With<ChangeSimPopup>>,
 ) {
     if input.pressed(KeyCode::Escape) {
-        if let Ok(e) = popup_plugin_query.single() {
+        if let Ok(e) = popup_query.single() {
             commands.entity(e).despawn();
         } else {
             commands.spawn(create_sim_popup());

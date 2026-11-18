@@ -4,7 +4,7 @@ name = "rust_simulations"
 version = "0.1.0"
 
 [dependencies]
-bevy = {version = "0.19.1", features = ["dynamic_linking", "shader_format_glsl"]}
+bevy = {version = "0.19.1", features = ["dynamic_linking", "shader_format_glsl", "bevy_feathers"]}
 # iyes_perf_ui = "0.5.0"
 
 [profile.dev]

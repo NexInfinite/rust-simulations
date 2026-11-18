@@ -3,7 +3,10 @@ use bevy::{
     prelude::*,
 };
 
-use crate::ui::change_sim::popup::{ChangeSimPopup, create_sim_popup};
+use crate::{
+    resources::global::main_in_focus,
+    ui::change_sim::popup::{ChangeSimPopup, create_sim_popup},
+};
 
 // use crate::simulations::selector::SimulationState;
 
@@ -16,6 +19,7 @@ impl Plugin for UiChangeSimButton {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
         app.add_systems(Update, handle_change_sim_click);
+        app.add_systems(Update, (controls).run_if(main_in_focus));
     }
 }
 
@@ -39,7 +43,7 @@ fn select_sim() -> impl Bundle + use<> {
                 position_type: PositionType::Absolute,
                 bottom: Val::Px(15.0),
                 left: Val::Px(15.0),
-                width: Val::Px(175.0),
+                width: Val::Px(150.0),
                 height: Val::Px(45.0),
                 border: UiRect::all(Val::Px(2.0)),
                 justify_content: JustifyContent::Center,
@@ -50,7 +54,7 @@ fn select_sim() -> impl Bundle + use<> {
             BackgroundColor(Color::from(BLACK)),
             // Button text
             children![(
-                Text::new("Change Sim"),
+                Text::new("Options"),
                 TextFont {
                     font_size: FontSize::Px(24.0),
                     ..default()
@@ -77,17 +81,16 @@ fn handle_change_sim_click(
     }
 }
 
-// fn handle_change_sim_click(
-//     mut interaction_query: Query<
-//         (&Interaction, &SimButton),
-//         (Changed<Interaction>, With<ChangeSimButton>),
-//     >,
-//     mut next_sim_state: ResMut<NextState<SimulationState>>,
-// ) {
-//     for (interaction, sim_button) in &mut interaction_query {
-//         // Check if we clicked it
-//         if matches!(interaction, Interaction::Pressed) {
-//             next_sim_state.set(sim_button.sim.clone());
-//         }
-//     }
-// }
+fn controls(
+    mut commands: Commands,
+    input: Res<ButtonInput<KeyCode>>,
+    popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
+) {
+    if input.pressed(KeyCode::KeyO) {
+        if let Ok(_) = popup_plugin_query.single() {
+            return;
+        }
+
+        commands.spawn(create_sim_popup());
+    }
+}
