@@ -1,10 +1,13 @@
 {
   "cSpell.words": [
     "colors",
+    "cranelift",
     "DARKGRAY",
     "iyes",
+    "rustflags",
     "smoothstep",
     "subsec",
-    "Winit"
+    "Winit",
+    "Zshare"
   ]
 }
