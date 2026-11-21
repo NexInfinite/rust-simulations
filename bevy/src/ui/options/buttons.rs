@@ -5,7 +5,7 @@ use bevy::{
 
 use crate::{
     resources::global::{FONT_LARGE, OUTLINE, PADDING_LARGE, main_in_focus},
-    ui::options::popup::{ChangeSimPopup, create_sim_popup},
+    ui::options::popup::{OptionsPopup, create_sim_popup},
 };
 
 // use crate::simulations::selector::SimulationState;
@@ -67,7 +67,7 @@ fn select_sim() -> impl Bundle + use<> {
 fn handle_change_sim_click(
     mut commands: Commands,
     mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<ChangeSimButton>)>,
-    popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
+    popup_plugin_query: Query<Entity, With<OptionsPopup>>,
 ) {
     for interaction in &mut interaction_query {
         if matches!(interaction, Interaction::Pressed) {
@@ -83,7 +83,7 @@ fn handle_change_sim_click(
 fn controls(
     mut commands: Commands,
     input: Res<ButtonInput<KeyCode>>,
-    popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
+    popup_plugin_query: Query<Entity, With<OptionsPopup>>,
 ) {
     if input.pressed(KeyCode::KeyO) {
         if popup_plugin_query.single().is_ok() {

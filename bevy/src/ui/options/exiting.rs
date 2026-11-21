@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 
 use crate::ui::options::{
-    popup::{ChangeSimPopup, create_sim_popup},
+    popup::{OptionsPopup, OptionsPopupPannel, create_sim_popup},
     title::ExitButton,
 };
 
 pub fn exit_from_button(
     mut commands: Commands,
     mut exit_query: Query<&Interaction, (Changed<Interaction>, With<ExitButton>)>,
-    popup_query: Query<Entity, With<ChangeSimPopup>>,
+    popup_query: Query<Entity, With<OptionsPopup>>,
 ) {
     for interaction in &mut exit_query {
         if matches!(interaction, Interaction::Pressed)
@@ -22,7 +22,7 @@ pub fn exit_from_button(
 pub fn exit_from_escape(
     mut commands: Commands,
     input: Res<ButtonInput<KeyCode>>,
-    popup_query: Query<Entity, With<ChangeSimPopup>>,
+    popup_query: Query<Entity, With<OptionsPopup>>,
 ) {
     if input.pressed(KeyCode::Escape) {
         if let Ok(e) = popup_query.single() {
