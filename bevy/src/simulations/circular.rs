@@ -5,20 +5,23 @@ use bevy::{
 };
 use std::f32::consts::PI;
 
-use super::selector::SimulationState;
-use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
+use crate::{
+    camera_and_background::grid, resources::simulation_timing::SimulationTiming,
+    simulations::plugin::SimulationSceneEnum,
+};
 
 pub struct CircularSimulation;
 
 impl Plugin for CircularSimulation {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(SimulationState::Circular), spawn_balls);
-        app.add_systems(OnExit(SimulationState::Circular), despawn_balls);
+        app.add_systems(OnEnter(SimulationSceneEnum::Circular), spawn_balls);
+        app.add_systems(OnExit(SimulationSceneEnum::Circular), despawn_balls);
+
         app.add_systems(
             Update,
             (
-                scale_ball.run_if(in_state(SimulationState::Circular)),
-                move_ball.run_if(in_state(SimulationState::Circular)),
+                scale_ball.run_if(in_state(SimulationSceneEnum::Circular)),
+                move_ball.run_if(in_state(SimulationSceneEnum::Circular)),
             ),
         );
     }
@@ -114,7 +117,7 @@ fn move_ball(
 
         // Following a ball
         if let Some(id) = ball.follow_id {
-            let follow_ball_query = ball_transform_hashmap.iter().find(|b| b.0.to_owned() == id);
+            let follow_ball_query = ball_transform_hashmap.iter().find(|b| *b.0 == id);
             if let Some(follow_ball) = follow_ball_query {
                 translation.x += follow_ball.1.x + camera_offset.x; // Offset camera x and y as it's already done above
                 translation.y += follow_ball.1.y - camera_offset.y;

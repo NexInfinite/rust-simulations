@@ -1,6 +1,15 @@
 {
   "cSpell.words": [
     "colors",
-    "DARKGRAY"
-  ]
+    "cranelift",
+    "DARKGRAY",
+    "iyes",
+    "rustflags",
+    "smoothstep",
+    "subsec",
+    "Winit",
+    "Zshare"
+  ],
+  "rust-analyzer.cargo.targetDir": true,
+  "rust-analyzer.check.command": "clippy",
 }

@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::resources::global::main_in_focus;
+
 #[derive(Resource)]
 pub struct SimulationTiming {
     pub paused: bool,
@@ -7,15 +9,15 @@ pub struct SimulationTiming {
     // TODO: Add speed controls and reset function
 }
 
-pub struct TimingPlugin;
+pub struct SimulationTimingPlugin;
 
-impl Plugin for TimingPlugin {
+impl Plugin for SimulationTimingPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(SimulationTiming {
-            paused: false,
+            paused: true,
             time: 0.0,
         });
-        app.add_systems(Update, (controls, tick));
+        app.add_systems(Update, (controls, tick).run_if(main_in_focus));
     }
 }
 

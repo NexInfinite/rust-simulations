@@ -3,21 +3,23 @@ use bevy::{
     prelude::*,
 };
 
-use crate::{camera_and_background::grid, resources::timing::SimulationTiming};
-
-use super::selector::SimulationState;
+use crate::{
+    camera_and_background::grid, resources::simulation_timing::SimulationTiming,
+    simulations::plugin::SimulationSceneEnum,
+};
 
 pub struct LinearSimulation;
 
 impl Plugin for LinearSimulation {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(SimulationState::Linear), spawn_balls);
-        app.add_systems(OnExit(SimulationState::Linear), despawn_balls);
+        app.add_systems(OnEnter(SimulationSceneEnum::Linear), spawn_balls);
+        app.add_systems(OnExit(SimulationSceneEnum::Linear), despawn_balls);
+
         app.add_systems(
             Update,
             (
-                scale_ball.run_if(in_state(SimulationState::Linear)),
-                move_ball.run_if(in_state(SimulationState::Linear)),
+                scale_ball.run_if(in_state(SimulationSceneEnum::Linear)),
+                move_ball.run_if(in_state(SimulationSceneEnum::Linear)),
             ),
         );
     }
@@ -123,9 +125,9 @@ fn move_ball(
 
 fn calculate_new_position(ball: Ball, time: f32) -> Vec2 {
     let diff = ball.end_pos - ball.start_pos;
-    return ball.start_pos + diff * triangle_wave_position(time, ball.period);
+    ball.start_pos + diff * triangle_wave_position(time, ball.period)
 }
 
 fn triangle_wave_position(time: f32, period: f32) -> f32 {
-    return 2.0 * f32::abs((time / period) - f32::floor((time / period) + 0.5));
+    2.0 * f32::abs((time / period) - f32::floor((time / period) + 0.5))
 }

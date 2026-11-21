@@ -1,0 +1,1 @@
+{"rule":"DASH_RULE","sentence":"^\\QThis is a project for fun, not for production or work, and so I'd rather keep the use of AI to a minimal - but I can't garauntee it will never be used.\\E$"}
