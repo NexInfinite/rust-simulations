@@ -4,7 +4,7 @@ use bevy::{
 };
 
 use crate::{
-    resources::global::{FONT_LARGE, PADDING_LARGE, main_in_focus},
+    resources::global::{FONT_LARGE, OUTLINE, PADDING_LARGE, main_in_focus},
     ui::options::popup::{ChangeSimPopup, create_sim_popup},
 };
 
@@ -44,7 +44,7 @@ fn select_sim() -> impl Bundle + use<> {
                 bottom: Val::Px(15.0),
                 left: Val::Px(15.0),
                 padding: PADDING_LARGE,
-                border: UiRect::all(Val::Px(2.0)),
+                border: OUTLINE,
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 ..default()

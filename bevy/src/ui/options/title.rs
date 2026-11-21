@@ -30,7 +30,7 @@ pub fn options_create_title() -> impl Bundle + use<> {
             ),
             (
                 Node {
-                    border: UiRect::all(Val::Px(2.0)),
+                    border: OUTLINE,
                     padding: PADDING_LARGE,
                     height: Val::Auto,
                     width: Val::Auto,

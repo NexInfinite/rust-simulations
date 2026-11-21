@@ -4,7 +4,7 @@ use bevy::{
 };
 
 use crate::resources::{
-    global::{FONT_LARGE, FONT_SMALL, PADDING_LARGE},
+    global::{FONT_LARGE, FONT_SMALL, OUTLINE, PADDING_LARGE},
     simulation_timing::SimulationTiming,
 };
 
@@ -45,7 +45,7 @@ fn play_pause_button(_asset_server: &AssetServer) -> impl Bundle + use<> {
                     top: Val::Px(15.0),
                     left: Val::Px(15.0),
                     padding: PADDING_LARGE,
-                    border: UiRect::all(Val::Px(2.0)),
+                    border: OUTLINE,
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     ..default()

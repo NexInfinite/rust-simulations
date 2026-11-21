@@ -51,7 +51,7 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
         children![(
             Node {
                 width: Val::Percent(70.0),
-                border: UiRect::all(Val::Px(2.0)),
+                border: OUTLINE,
                 padding: UiRect {
                     left: Val::Px(15.0),
                     right: Val::Px(10.0),
