@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::ui::options::{
-    popup::{OptionsPopup, OptionsPopupPannel, create_sim_popup},
+    popup::{OptionsPopup, create_sim_popup},
     title::ExitButton,
 };
 
