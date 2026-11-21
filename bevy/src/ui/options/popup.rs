@@ -5,7 +5,10 @@ use bevy::{
 
 use crate::{
     resources::global::*,
-    ui::options::title::{options_create_title, options_exit_button},
+    ui::options::{
+        select_sim::{create_select_sim_dropdown, select_sim_dropdown_click},
+        title::{options_create_title, options_exit_button},
+    },
 };
 
 pub struct UiChangeSimPopup;
@@ -19,7 +22,8 @@ impl Plugin for UiChangeSimPopup {
         app.add_observer(on_popup_despawned);
         app.add_systems(
             Update,
-            (options_exit_button, controls).run_if(change_sim_popup_in_focus),
+            (options_exit_button, select_sim_dropdown_click, controls)
+                .run_if(change_sim_popup_in_focus),
         );
     }
 }
@@ -48,32 +52,20 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
             Node {
                 width: Val::Percent(70.0),
                 border: UiRect::all(Val::Px(2.0)),
-                padding: UiRect::all(Val::Px(10.0)),
+                padding: UiRect {
+                    left: Val::Px(15.0),
+                    right: Val::Px(10.0),
+                    top: Val::Px(10.0),
+                    bottom: Val::Px(10.0)
+                },
                 flex_direction: FlexDirection::Column,
                 row_gap: Val::Px(10.0),
                 ..default()
             },
             BorderColor::all(Color::from(WHITE)),
             BackgroundColor(Color::from(BLACK)),
-            children![options_create_title(), create_dropdown()],
+            children![options_create_title(), create_select_sim_dropdown()],
         )],
-    )
-}
-
-// Select simulation
-
-fn create_dropdown() -> impl Bundle + use<> {
-    (
-        Node {
-            border: UiRect::all(Val::Px(2.0)),
-            padding: PADDING_LARGE,
-            width: Val::Percent(100.0),
-            justify_content: JustifyContent::Center,
-            align_items: AlignItems::Center,
-            ..default()
-        },
-        BorderColor::all(Color::from(WHITE)),
-        BackgroundColor(Color::from(BLACK)),
     )
 }
 

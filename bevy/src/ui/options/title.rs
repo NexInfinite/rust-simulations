@@ -19,7 +19,6 @@ pub fn options_create_title() -> impl Bundle + use<> {
         children![
             (
                 Node {
-                    padding: UiRect::left(Val::Px(5.0)),
                     justify_self: JustifySelf::Center,
                     ..default()
                 },
