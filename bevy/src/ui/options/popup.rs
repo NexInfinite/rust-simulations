@@ -6,11 +6,12 @@ use bevy::{
 use crate::{
     resources::global::*,
     ui::options::{
+        exiting::{exit_from_button, exit_from_escape},
         select_sim::{
             close_dropdown_click_outside, create_select_sim_dropdown, select_option,
             sync_dropdown_label, sync_dropdown_option_styling, toggle_dropdown,
         },
-        title::{options_create_title, options_exit_button},
+        title::options_create_title,
     },
 };
 
@@ -28,11 +29,11 @@ impl Plugin for UiChangeSimPopup {
             (
                 close_dropdown_click_outside,
                 sync_dropdown_option_styling,
-                options_exit_button,
                 sync_dropdown_label,
+                exit_from_button,
+                exit_from_escape,
                 toggle_dropdown,
                 select_option,
-                controls,
             )
                 .run_if(change_sim_popup_in_focus),
         );
@@ -78,18 +79,4 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
             children![options_create_title(), create_select_sim_dropdown()],
         )],
     )
-}
-
-fn controls(
-    mut commands: Commands,
-    input: Res<ButtonInput<KeyCode>>,
-    popup_query: Query<Entity, With<ChangeSimPopup>>,
-) {
-    if input.pressed(KeyCode::Escape) {
-        if let Ok(e) = popup_query.single() {
-            commands.entity(e).despawn();
-        } else {
-            commands.spawn(create_sim_popup());
-        }
-    }
 }

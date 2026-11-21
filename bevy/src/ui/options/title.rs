@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::{resources::global::*, ui::options::popup::ChangeSimPopup};
+use crate::resources::global::*;
 
 #[derive(Component)]
 pub struct ExitButton;
@@ -29,6 +29,7 @@ pub fn options_create_title() -> impl Bundle + use<> {
                 },
             ),
             (
+                Button,
                 Node {
                     border: OUTLINE,
                     padding: PADDING_LARGE,
@@ -50,18 +51,4 @@ pub fn options_create_title() -> impl Bundle + use<> {
             )
         ],
     )
-}
-
-pub fn options_exit_button(
-    mut commands: Commands,
-    mut exit_query: Query<&Interaction, (Changed<Interaction>, With<ExitButton>)>,
-    popup_query: Query<Entity, With<ChangeSimPopup>>,
-) {
-    for interaction in &mut exit_query {
-        if matches!(interaction, Interaction::Pressed)
-            && let Ok(e) = popup_query.single()
-        {
-            commands.entity(e).despawn();
-        }
-    }
 }

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::ui::{
     debug::UiDebugMode,
-    options::{button::UiChangeSimButton, popup::UiChangeSimPopup},
+    options::{buttons::UiChangeSimButton, popup::UiChangeSimPopup},
     play_pause_button::UiPlayPauseButton,
 };
 
