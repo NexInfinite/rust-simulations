@@ -12,6 +12,7 @@ pub fn create_play_pause_button() -> impl Bundle + use<> {
     (
         Button,
         Node {
+            min_width: Val::Px(120.0),
             padding: PADDING_LARGE,
             border: OUTLINE,
             justify_content: JustifyContent::Center,
@@ -21,7 +22,7 @@ pub fn create_play_pause_button() -> impl Bundle + use<> {
         BorderColor::all(Color::from(WHITE)),
         BackgroundColor(Color::from(BLACK)),
         children![(
-            Text::new("Pause"),
+            Text::new("Paused"),
             TextFont {
                 font_size: FONT_LARGE,
                 ..default()
@@ -55,9 +56,9 @@ pub fn sync_button_label(
     for children in &mut button_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         **text = if simulation_timing.paused {
-            "Play".to_string()
+            "Paused".to_string()
         } else {
-            "Pause".to_string()
+            "Playing".to_string()
         }
     }
 }

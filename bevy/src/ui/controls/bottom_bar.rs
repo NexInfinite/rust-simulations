@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     resources::global::*,
-    ui::controls::{options_button, play_pause_button},
+    ui::controls::{options_button, play_pause_button, time_label},
 };
 
 pub struct UiBottomBar;
@@ -23,6 +23,9 @@ impl Plugin for UiBottomBar {
                 play_pause_button::sync_button_label,
             ),
         );
+
+        // Time label
+        app.add_systems(Update, time_label::sync_label_text);
     }
 }
 
@@ -38,11 +41,22 @@ fn create_bottom_bar() -> impl Bundle + use<> {
             padding: UiRect::all(Val::Px(15.0)),
             position_type: PositionType::Absolute,
             bottom: Val::Px(0.0),
+            align_items: AlignItems::Center,
             ..default()
         },
         children![
-            play_pause_button::create_play_pause_button(),
-            options_button::create_options_button()
+            (
+                Node {
+                    align_items: AlignItems::Center,
+                    column_gap: Val::Px(15.0),
+                    ..default()
+                },
+                children![
+                    play_pause_button::create_play_pause_button(),
+                    time_label::create_time_label(),
+                ],
+            ),
+            options_button::create_options_button(),
         ],
     )
 }
