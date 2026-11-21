@@ -5,6 +5,8 @@ use bevy::{
     window::{PresentMode, WindowPlugin},
 };
 
+use crate::resources::global::main_in_focus;
+
 mod camera_and_background;
 mod resources;
 mod simulations;
@@ -33,12 +35,13 @@ fn main() {
     // Default, UI, and timings
     app.add_plugins((ui::plugin::UiPlugin, simulations::plugin::SimulationsPlugin));
 
-    // Resources
+    // Resources and systems
     app.add_plugins((
         resources::simulation_timing::SimulationTimingPlugin,
         resources::tick::AppTickPlugin,
         resources::global::GlobalResourcePlugin,
     ));
+    app.add_systems(Update, (window_exit).run_if(main_in_focus));
 
     // Camera
     app.add_plugins((
@@ -46,7 +49,7 @@ fn main() {
         camera_and_background::grid::GridPlugin,
     ));
 
-    // Run and unhide window once all plugins are loaded
+    // Finally run the app
     app.run();
 }
 
@@ -54,5 +57,11 @@ fn add_environmental_flags() -> EnvFlags {
     EnvFlags {
         fps_logs: std::env::args().any(|arg| arg == "--fps"),
         ticks_logs: std::env::args().any(|arg| arg == "--ticks"),
+    }
+}
+
+fn window_exit(input: Res<ButtonInput<KeyCode>>, mut exit: MessageWriter<AppExit>) {
+    if input.just_pressed(KeyCode::Escape) {
+        exit.write(AppExit::Success);
     }
 }

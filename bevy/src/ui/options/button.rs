@@ -4,8 +4,8 @@ use bevy::{
 };
 
 use crate::{
-    resources::global::main_in_focus,
-    ui::change_sim::popup::{ChangeSimPopup, create_sim_popup},
+    resources::global::{FONT_LARGE, PADDING_LARGE, main_in_focus},
+    ui::options::popup::{ChangeSimPopup, create_sim_popup},
 };
 
 // use crate::simulations::selector::SimulationState;
@@ -43,8 +43,7 @@ fn select_sim() -> impl Bundle + use<> {
                 position_type: PositionType::Absolute,
                 bottom: Val::Px(15.0),
                 left: Val::Px(15.0),
-                width: Val::Px(150.0),
-                height: Val::Px(45.0),
+                padding: PADDING_LARGE,
                 border: UiRect::all(Val::Px(2.0)),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
@@ -54,9 +53,9 @@ fn select_sim() -> impl Bundle + use<> {
             BackgroundColor(Color::from(BLACK)),
             // Button text
             children![(
-                Text::new("Options asdasd"),
+                Text::new("Options"),
                 TextFont {
-                    font_size: FontSize::Px(24.0),
+                    font_size: FONT_LARGE,
                     ..default()
                 },
             )],

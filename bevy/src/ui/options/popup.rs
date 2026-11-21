@@ -3,7 +3,10 @@ use bevy::{
     prelude::*,
 };
 
-use crate::resources::global::{GlobalResource, change_sim_popup_in_focus};
+use crate::{
+    resources::global::*,
+    ui::options::title::{options_create_title, options_exit_button},
+};
 
 pub struct UiChangeSimPopup;
 
@@ -16,7 +19,7 @@ impl Plugin for UiChangeSimPopup {
         app.add_observer(on_popup_despawned);
         app.add_systems(
             Update,
-            (exit_button, controls).run_if(change_sim_popup_in_focus),
+            (options_exit_button, controls).run_if(change_sim_popup_in_focus),
         );
     }
 }
@@ -34,6 +37,8 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
         Node {
             width: Val::Percent(100.0),
             height: Val::Percent(100.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
         ChangeSimPopup,
@@ -42,68 +47,34 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
         children![(
             Node {
                 width: Val::Percent(70.0),
-                height: Val::Percent(80.0),
-                left: Val::Percent(15.0),
-                top: Val::Percent(10.0),
                 border: UiRect::all(Val::Px(2.0)),
-                display: Display::Flex,
+                padding: UiRect::all(Val::Px(10.0)),
+                flex_direction: FlexDirection::Column,
+                row_gap: Val::Px(10.0),
                 ..default()
             },
             BorderColor::all(Color::from(WHITE)),
             BackgroundColor(Color::from(BLACK)),
-            children![(children![(create_popup_exit(), create_popup_options())]),],
+            children![options_create_title(), create_dropdown()],
         )],
     )
 }
 
-fn create_popup_options() -> impl Bundle + use<> {}
+// Select simulation
 
-#[derive(Component)]
-struct ExitButton;
-
-fn create_popup_exit() -> impl Bundle + use<> {
+fn create_dropdown() -> impl Bundle + use<> {
     (
         Node {
-            // top: Val::Percent(2.0),
-            // left: Val::Percent(2.0),
             border: UiRect::all(Val::Px(2.0)),
-            // padding: UiRect {
-            //     left: Val::Px(5.0),
-            //     right: Val::Px(5.0),
-            //     top: Val::Px(2.5),
-            //     bottom: Val::Px(2.5),
-            // },
-            height: Val::Px(100.0),
-            width: Val::Px(100.0),
+            padding: PADDING_LARGE,
+            width: Val::Percent(100.0),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
             ..default()
         },
-        ExitButton,
         BorderColor::all(Color::from(WHITE)),
         BackgroundColor(Color::from(BLACK)),
-        children![(
-            Text::new("Exit"),
-            TextFont {
-                font_size: FontSize::Px(16.0),
-                ..default()
-            },
-        )],
     )
-}
-
-fn exit_button(
-    mut commands: Commands,
-    mut exit_query: Query<&Interaction, (Changed<Interaction>, With<ExitButton>)>,
-    popup_query: Query<Entity, With<ChangeSimPopup>>,
-) {
-    for interaction in &mut exit_query {
-        if matches!(interaction, Interaction::Pressed)
-            && let Ok(e) = popup_query.single()
-        {
-            commands.entity(e).despawn();
-        }
-    }
 }
 
 fn controls(
