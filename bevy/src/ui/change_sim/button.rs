@@ -54,7 +54,7 @@ fn select_sim() -> impl Bundle + use<> {
             BackgroundColor(Color::from(BLACK)),
             // Button text
             children![(
-                Text::new("Options"),
+                Text::new("Options asdasd"),
                 TextFont {
                     font_size: FontSize::Px(24.0),
                     ..default()
@@ -87,7 +87,7 @@ fn controls(
     popup_plugin_query: Query<Entity, With<ChangeSimPopup>>,
 ) {
     if input.pressed(KeyCode::KeyO) {
-        if let Ok(_) = popup_plugin_query.single() {
+        if popup_plugin_query.single().is_ok() {
             return;
         }
 

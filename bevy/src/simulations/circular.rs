@@ -7,7 +7,7 @@ use std::f32::consts::PI;
 
 use crate::{
     camera_and_background::grid, resources::simulation_timing::SimulationTiming,
-    simulations::simulations::SimulationSceneEnum,
+    simulations::plugin::SimulationSceneEnum,
 };
 
 pub struct CircularSimulation;
@@ -117,7 +117,7 @@ fn move_ball(
 
         // Following a ball
         if let Some(id) = ball.follow_id {
-            let follow_ball_query = ball_transform_hashmap.iter().find(|b| b.0.to_owned() == id);
+            let follow_ball_query = ball_transform_hashmap.iter().find(|b| *b.0 == id);
             if let Some(follow_ball) = follow_ball_query {
                 translation.x += follow_ball.1.x + camera_offset.x; // Offset camera x and y as it's already done above
                 translation.y += follow_ball.1.y - camera_offset.y;

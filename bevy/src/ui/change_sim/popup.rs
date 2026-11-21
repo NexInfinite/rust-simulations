@@ -45,28 +45,18 @@ pub fn create_sim_popup() -> impl Bundle + use<> {
                 height: Val::Percent(80.0),
                 left: Val::Percent(15.0),
                 top: Val::Percent(10.0),
+                border: UiRect::all(Val::Px(2.0)),
+                display: Display::Flex,
                 ..default()
             },
-            children![(
-                Node {
-                    bottom: Val::Px(0.0),
-                    left: Val::Px(0.0),
-                    width: Val::Percent(100.0),
-                    height: Val::Percent(100.0),
-                    border: UiRect::all(Val::Px(2.0)),
-                    ..default()
-                },
-                BorderColor::all(Color::from(WHITE)),
-                BackgroundColor(Color::from(BLACK)),
-                children![(create_popup_exit(), create_popup_options())]
-            ),],
+            BorderColor::all(Color::from(WHITE)),
+            BackgroundColor(Color::from(BLACK)),
+            children![(children![(create_popup_exit(), create_popup_options())]),],
         )],
     )
 }
 
-fn create_popup_options() -> impl Bundle + use<> {
-    ()
-}
+fn create_popup_options() -> impl Bundle + use<> {}
 
 #[derive(Component)]
 struct ExitButton;
@@ -74,13 +64,17 @@ struct ExitButton;
 fn create_popup_exit() -> impl Bundle + use<> {
     (
         Node {
-            // TODO: Move to pixel sizes and fix clicking
-            // TODO: Then add dropdown? Should probably be its own file?
-            top: Val::Percent(2.0),
-            left: Val::Percent(89.0),
-            width: Val::Percent(10.0),
-            height: Val::Percent(5.0),
+            // top: Val::Percent(2.0),
+            // left: Val::Percent(2.0),
             border: UiRect::all(Val::Px(2.0)),
+            // padding: UiRect {
+            //     left: Val::Px(5.0),
+            //     right: Val::Px(5.0),
+            //     top: Val::Px(2.5),
+            //     bottom: Val::Px(2.5),
+            // },
+            height: Val::Px(100.0),
+            width: Val::Px(100.0),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
             ..default()
@@ -104,10 +98,10 @@ fn exit_button(
     popup_query: Query<Entity, With<ChangeSimPopup>>,
 ) {
     for interaction in &mut exit_query {
-        if matches!(interaction, Interaction::Pressed) {
-            if let Ok(e) = popup_query.single() {
-                commands.entity(e).despawn();
-            }
+        if matches!(interaction, Interaction::Pressed)
+            && let Ok(e) = popup_query.single()
+        {
+            commands.entity(e).despawn();
         }
     }
 }

@@ -5,7 +5,7 @@ use bevy::{
 
 use crate::{
     camera_and_background::grid, resources::simulation_timing::SimulationTiming,
-    simulations::simulations::SimulationSceneEnum,
+    simulations::plugin::SimulationSceneEnum,
 };
 
 pub struct LinearSimulation;
@@ -125,9 +125,9 @@ fn move_ball(
 
 fn calculate_new_position(ball: Ball, time: f32) -> Vec2 {
     let diff = ball.end_pos - ball.start_pos;
-    return ball.start_pos + diff * triangle_wave_position(time, ball.period);
+    ball.start_pos + diff * triangle_wave_position(time, ball.period)
 }
 
 fn triangle_wave_position(time: f32, period: f32) -> f32 {
-    return 2.0 * f32::abs((time / period) - f32::floor((time / period) + 0.5));
+    2.0 * f32::abs((time / period) - f32::floor((time / period) + 0.5))
 }

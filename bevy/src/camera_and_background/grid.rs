@@ -39,7 +39,7 @@ fn camera_setup(
     commands.spawn((
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(GridShader {
-            window_size: window_size,
+            window_size,
             camera_offset: vec2(0.0, 0.0),
             default_zoom: DEFAULT_ZOOM, // Must be the same as zoom
             zoom: DEFAULT_ZOOM,         // 0-1 is zooming in, >1 is zooming out (ikr)

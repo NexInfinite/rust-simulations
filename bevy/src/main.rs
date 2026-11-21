@@ -1,3 +1,5 @@
+#![recursion_limit = "256"]
+
 use bevy::{
     prelude::*,
     window::{PresentMode, WindowPlugin},
@@ -29,10 +31,7 @@ fn main() {
     app.insert_resource(add_environmental_flags());
 
     // Default, UI, and timings
-    app.add_plugins((
-        ui::ui::UiPlugin,
-        simulations::simulations::SimulationsPlugin,
-    ));
+    app.add_plugins((ui::plugin::UiPlugin, simulations::plugin::SimulationsPlugin));
 
     // Resources
     app.add_plugins((
@@ -52,11 +51,8 @@ fn main() {
 }
 
 fn add_environmental_flags() -> EnvFlags {
-    // Add environmental flags
-    let fps_logs = std::env::args().any(|arg| arg == "--fps");
-    let ticks_logs = std::env::args().any(|arg| arg == "--ticks");
     EnvFlags {
-        fps_logs: fps_logs,
-        ticks_logs: ticks_logs,
+        fps_logs: std::env::args().any(|arg| arg == "--fps"),
+        ticks_logs: std::env::args().any(|arg| arg == "--ticks"),
     }
 }
