@@ -1,4 +1,5 @@
 #![recursion_limit = "256"]
+#![warn(clippy::type_complexity)]
 
 use bevy::{
     prelude::*,

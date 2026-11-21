@@ -167,3 +167,26 @@ pub fn sync_dropdown_option_styling(
         }
     }
 }
+
+pub fn close_dropdown_click_outside(
+    mouse: Res<ButtonInput<MouseButton>>,
+    dropdown_interactions: Query<&Interaction, Or<(With<DropdownOption>, With<DropdownButton>)>>,
+    mut list_query: Query<&mut Node, With<DropdownList>>,
+) {
+    if !mouse.just_pressed(MouseButton::Left) {
+        return;
+    }
+
+    if dropdown_interactions
+        .iter()
+        .any(|i| *i != Interaction::None)
+    {
+        return;
+    }
+
+    for mut node in &mut list_query {
+        if node.display != Display::None {
+            node.display = Display::None;
+        }
+    }
+}

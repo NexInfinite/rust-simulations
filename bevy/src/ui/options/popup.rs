@@ -7,8 +7,8 @@ use crate::{
     resources::global::*,
     ui::options::{
         select_sim::{
-            create_select_sim_dropdown, select_option, sync_dropdown_label,
-            sync_dropdown_option_styling, toggle_dropdown,
+            close_dropdown_click_outside, create_select_sim_dropdown, select_option,
+            sync_dropdown_label, sync_dropdown_option_styling, toggle_dropdown,
         },
         title::{options_create_title, options_exit_button},
     },
@@ -26,6 +26,7 @@ impl Plugin for UiChangeSimPopup {
         app.add_systems(
             Update,
             (
+                close_dropdown_click_outside,
                 sync_dropdown_option_styling,
                 options_exit_button,
                 sync_dropdown_label,
