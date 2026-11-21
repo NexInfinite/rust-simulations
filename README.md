@@ -18,3 +18,4 @@ There will eventually be problems, detailed below if they occur, in which I'd ra
 - Used in copilot reviews, sometimes I'll let it submit the code
 - Used to rework how movement was handled so that entities moved in lock step, not lagging behind. This was done in parallel with Copilot in VSCode, it gave ideas and wrote some areas and I implemented others.
 - Used when migrating over to newer versions of bevy as some documentation changed that I could not figure out, once the agent wrote it there was no point in rewriting, however I did read it.
+- Used for understanding bevy ui and writing some handlers for clicking outside the options popup, this would have taken many, many hours of head banging - with claude it only took 2 hours of head banging.
