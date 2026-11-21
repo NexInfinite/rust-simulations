@@ -98,7 +98,7 @@ fn controls(
         }
 
         // Reset everything
-        if input.pressed(KeyCode::KeyO) {
+        if input.pressed(KeyCode::KeyR) {
             material.1.camera_offset = vec2(0.0, 0.0);
             material.1.zoom = DEFAULT_ZOOM;
         }
